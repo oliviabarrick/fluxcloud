@@ -58,6 +58,10 @@ func slackEvent(event fluxevent.Event) {
 	body := "Event: " + event.String() + "\n"
 	commit_id := ""
 
+	if len(event.ServiceIDs) == 0 {
+		return
+	}
+
 	switch event.Type{
 		case fluxevent.EventSync:
 			metadata := event.Metadata.(*fluxevent.SyncEventMetadata)
