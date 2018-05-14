@@ -66,7 +66,7 @@ func slackEvent(event fluxevent.Event) {
 			body += "Commits:\n"
 			for _, commit := range metadata.Commits {
 				link := github_link + "/commit/" + commit.Revision
-				body += "\n* [" + commit.Revision + "](" + link + "): " + commit.Message
+				body += "\n* <" + link + "|" + commit.Revision + ">: " + commit.Message
 			}
 		default:
 	}
