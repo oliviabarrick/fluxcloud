@@ -40,6 +40,6 @@ spec:
         - name: SLACK_USERNAME
           value: Flux Deployer
         - name: SLACK_ICON_EMOJI
-          value: ":pax:"
+          value: ":weave:"
         - name: GITHUB_URL
           value: "https://github.com/justinbarrick/fluxcloud/"
