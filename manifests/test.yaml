@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: test
-        image: justinbarrick/fluxcloud:473acd3c677d5becd54eab55200430638c812d84b76ffb5f48b4eceb5afc53cee
+        image: justinbarrick/fluxcloud:473acd3c677d5becd54eab55200430638c812d84b76ffb5f48b4eceb5afc53ceee
         imagePullPolicy: Always
         ports:
         - containerPort: 3030
