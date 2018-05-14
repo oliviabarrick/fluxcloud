@@ -12,5 +12,5 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s' -a -installsuffix cgo -o app main.go
 FROM scratch
 COPY --from=0 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=0 /go/src/github.com/justinbarrick/fluxcloud/app /app
-EXPOSE 3030
+EXPOSE 3031
 ENTRYPOINT ["/app"]
