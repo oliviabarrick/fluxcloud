@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"github.com/gorilla/websocket"
 	fluxevent "github.com/weaveworks/flux/event"
 )
@@ -75,15 +76,10 @@ func slackEvent(event fluxevent.Event) {
 		body += "\n* " + serviceId
 	}
 
-	username := slack_username
-	if susername == "" {
-		username = "Flux Deployer"
-	}
-
 	message := SlackMessage{
 		Channel: slack_channel,
 		IconEmoji: slack_icon_emoji,
-		Username: username,
+		Username: slack_username,
 		Attachments: []SlackAttachment{
 			SlackAttachment{
 				Color: "#4286f4",
@@ -169,5 +165,5 @@ func main() {
 	settings()
 	http.HandleFunc("/v6/events", fluxcloudEvent)
 	http.HandleFunc("/", fluxcloud)
-	log.Fatal(http.ListenAndServe(":3030", nil))
+	log.Fatal(http.ListenAndServe(":3031", nil))
 }
