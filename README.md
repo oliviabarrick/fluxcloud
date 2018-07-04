@@ -1,5 +1,9 @@
 Fluxcloud is a tool to receive events from the [Weave flux](https://github.com/weaveworks/flux).
 
+![build status](https://ci.codesink.net/api/badges/justinbarrick/fluxcloud/status.svg)
+[![image version](https://images.microbadger.com/badges/version/justinbarrick/fluxcloud.svg)](https://microbadger.com/images/justinbarrick/fluxcloud)
+[![image size](https://images.microbadger.com/badges/image/justinbarrick/fluxcloud.svg)](https://microbadger.com/images/justinbarrick/fluxcloud "Get your own image badge on microbadger.com")
+
 Weave Flux is a useful tool for managing the state of your Kubernetes cluster.
 
 Fluxcloud is a valid upstream for Weave, allowing you to send Flux events to Slack
