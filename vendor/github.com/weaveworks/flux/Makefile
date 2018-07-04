@@ -1,7 +1,7 @@
 .DEFAULT: all
 .PHONY: all release-bins clean realclean test integration-test
 
-DOCKER?=docker
+SUDO := $(shell docker info > /dev/null 2> /dev/null || echo "sudo")
 TEST_FLAGS?=
 
 include docker/kubectl.version
@@ -37,18 +37,18 @@ realclean: clean
 	rm -rf ./cache
 
 test:
-	go test ${TEST_FLAGS} $(shell go list ./... | grep -v "^github.com/weaveworks/flux/vendor" | sort -u)
+	PATH=${PATH}:${PWD}/bin go test ${TEST_FLAGS} $(shell go list ./... | grep -v "^github.com/weaveworks/flux/vendor" | sort -u)
 
 build/.%.done: docker/Dockerfile.%
 	mkdir -p ./build/docker/$*
 	cp $^ ./build/docker/$*/
-	${DOCKER} build -t quay.io/weaveworks/$* -t quay.io/weaveworks/$*:$(IMAGE_TAG) \
+	$(SUDO) docker build -t quay.io/weaveworks/$* -t quay.io/weaveworks/$*:$(IMAGE_TAG) \
 		--build-arg VCS_REF="$(VCS_REF)" \
 		--build-arg BUILD_DATE="$(BUILD_DATE)" \
 		-f build/docker/$*/Dockerfile.$* ./build/docker/$*
 	touch $@
 
-build/.flux.done: build/fluxd build/kubectl docker/ssh_config
+build/.flux.done: build/fluxd build/kubectl docker/ssh_config docker/kubeconfig
 build/.helm-operator.done: build/helm-operator build/kubectl docker/ssh_config
 
 build/fluxd: $(FLUXD_DEPS)

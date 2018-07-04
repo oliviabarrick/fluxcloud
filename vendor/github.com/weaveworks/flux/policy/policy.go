@@ -36,6 +36,17 @@ func Tag(policy Policy) bool {
 	return strings.HasPrefix(string(policy), "tag.")
 }
 
+func GetTagPattern(services ResourceMap, service flux.ResourceID, container string) string {
+	if services == nil {
+		return "*"
+	}
+	policies := services[service]
+	if pattern, ok := policies.Get(TagPrefix(container)); ok {
+		return strings.TrimPrefix(pattern, "glob:")
+	}
+	return "*"
+}
+
 type Updates map[flux.ResourceID]Update
 
 type Update struct {
@@ -103,6 +114,16 @@ func (s Set) Contains(needle Policy) bool {
 func (s Set) Get(p Policy) (string, bool) {
 	v, ok := s[p]
 	return v, ok
+}
+
+func (s Set) Without(omit Policy) Set {
+	newMap := Set{}
+	for p, v := range s {
+		if p != omit {
+			newMap[p] = v
+		}
+	}
+	return newMap
 }
 
 func (s Set) ToStringMap() map[string]string {

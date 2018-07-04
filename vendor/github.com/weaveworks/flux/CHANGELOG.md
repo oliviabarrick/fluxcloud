@@ -1,3 +1,85 @@
+This is the changelog for the Flux daemon; the changelog for the Helm
+operator is in [./CHANGELOG-helmop.md](./CHANGELOG-helmop.md).
+
+## 1.4.1 (2018-06-21)
+
+This release fixes some wrinkles in the new YAML updating code, so
+that YAML multidocs and kubernetes List resources are fully
+supported.
+
+It also introduces the `fluxctl sync` command, which tells Flux to
+update from git and apply to Kubernetes -- as requested in
+[TGI Kubernetes](https://www.youtube.com/watch?v=aQz3H9bIH8Y)!
+
+### Fixes
+
+- Write whole files back after updates, so that multidocs and Lists
+  aren't overwritten. A symptom of the problem was that a release
+  would return an error something like "Verification failed: resources
+  {...} were present before update and not after"
+  [weaveworks/flux#1137](https://github.com/weaveworks/flux/pull/1137)
+- Interpret and update CronJob manifests correctly
+  [weaveworks/flux#1133](https://github.com/weaveworks/flux/pull/1133)
+
+### Improvements
+
+- Return a more helpful message when Flux can't parse YAML files
+  [weaveworks/flux#1141](https://github.com/weaveworks/flux/pull/1141)
+- Bake SSH config into the global location (`/etc/ssh`), so that it's
+  easier to override it by mounting a ConfigMap into `/root/.ssh/`
+  [weaveworks/flux#1154](https://github.com/weaveworks/flux/pull/1154)
+- Reduce the size of list-images API/RPC responses by sending only the
+  image metadata that's requested
+  [weaveworks/flux#913](https://github.com/weaveworks/flux/issues/913)
+
+## 1.4.0 (2018-06-05)
+
+This release includes a rewrite of the YAML updating code, removing
+the restrictions on using List resources and files with multiple YAML
+documents, as well as fixing various bugs (like being confused by the
+indentation of `container` blocks).
+
+See https://github.com/weaveworks/flux/blob/1.4.0/site/requirements.md
+for remaining constraints.
+
+The YAML parser preserves comments and literal quoting, but may
+reindent blocks the first time it changes a file.
+
+### Fixes
+
+- Correct an issue the led to Flux incorrectly reporting resources as
+  read-only [weaveworks/flux#1119](https://github.com/weaveworks/flux/pull/1119)
+- Some YAML update problems were fixed by the rewrite, the most egregious being:
+  - botched releases when a YAML has indented container blocks
+    [weaveworks/flux#1082](https://github.com/weaveworks/flux/issues/1082)
+  - mangled annotations when using multidoc YAML files
+    [weaveworks/flux#1044](https://github.com/weaveworks/flux/issues/1044)
+
+### Improvements
+
+- Rewrite the YAML update code to use a round-tripping parser, rather
+  than regular expressions
+  [weaveworks/flux#976](https://github.com/weaveworks/flux/pull/976). This
+  removes the restrictions on how YAMLs are formatted, though there
+  are still going to be corner cases in the parser
+  ([verifying changes](https://github.com/weaveworks/flux/pull/1094)
+  will mitigate those by failing updates that would corrupt files).
+
+## 1.3.1 (2018-05-29)
+
+### Fixes
+
+- Correct filtering of Helm charts when loading manifests from the git repo [weaveworks/flux#1076](https://github.com/weaveworks/flux/pull/1076)
+- Sync with cluster as soon as the git repository is ready [weaveworks/flux#1060](https://github.com/weaveworks/flux/pull/1060)
+- Avoid panic when reporting on `StatefulSet` status [weaveworks/flux#1062](https://github.com/weaveworks/flux/pull/1062)
+
+### Improvements
+
+- Changes made to the git repo when releasing new images are now verified, meaning less chance of erroneous changes being committed [weaveworks/flux#1094](https://github.com/weaveworks/flux/pull/1094)
+- The ListImages API method now accepts an argument saying which fields to include for each container. This is intended to cut down the amount of data sent over the wire, since you don't always need the full list of available images [weaveworks/flux#1084](https://github.com/weaveworks/flux/pull/1084)
+- Add (back) the fluxd flag `--docker-config` so that image registry credentials can be supplied in a file mounted into the container [weaveworks/flux#1065](https://github.com/weaveworks/flux/pull/1065). This should make it easier to work around situations in which you don't want to use imagePullSecrets on each resource.
+- Label `flux` and `helm-operator` images with [Open Containers Initiative (OCI) metadata](https://github.com/opencontainers/image-spec/blob/master/annotations.md) [weaveworks/flux#1075](https://github.com/weaveworks/flux/pull/1075)
+
 ## 1.3.0 (2018-04-26)
 
 ### Fixes
@@ -41,7 +123,9 @@
 
 ### Experimental
 
-- Alpha release of [helm-operator](https://github.com/weaveworks/flux/blob/master/site/helm/helm-integration.md)
+- Alpha release of
+  [helm-operator](https://github.com/weaveworks/flux/blob/master/site/helm/helm-integration.md). See
+  [./CHANGELOG-helmop.md](./CHANGELOG-helmop.md) for future releases.
 
 ## 1.2.3 (2018-02-07)
 
