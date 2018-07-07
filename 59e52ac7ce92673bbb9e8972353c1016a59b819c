@@ -1,0 +1,1 @@
+{"jobID":"f86c3df4-d58c-4adf-7c81-ae6b7662dbd3","spec":{"type":"policy","cause":{"Message":"","User":"Your Name \u003cyou@example.com\u003e"},"spec":{"default:deployment/test":{"add":{},"remove":{"automated":"true"}}}},"result":null}
