@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: test
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: test
+    spec:
+      containers:
+      - name: test2
+        image: justinbarrick/nginx:test2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3030

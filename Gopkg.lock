@@ -8,6 +8,12 @@
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/docker/distribution"
   packages = [
@@ -114,6 +120,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/prometheus/client_golang"
   packages = [
@@ -168,8 +180,13 @@
   version = "v1.0.1"
 
 [[projects]]
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
+
+[[projects]]
   name = "github.com/weaveworks/flux"
-  source = "https://github.com/justinbarrick/flux.git"
   packages = [
     ".",
     "cluster",
@@ -184,7 +201,8 @@
     "ssh",
     "update"
   ]
-  revision = "b6663270571ded4682bfb37d1e54b63e7c76d212"
+  revision = "891f2a0e99ac2cde8b6340581cb58cbc2cbed142"
+  version = "1.4.2"
 
 [[projects]]
   branch = "master"
@@ -216,6 +234,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "af4f96fe9a95ddaf7f182c3409d107af8bc3e0d718ccfab1ac448e60db770305"
+  inputs-digest = "3453e6ea0c2f83b39acefa8a4e330e3b20c52f18e9fa51acca9cef1731d30e50"
   solver-name = "gps-cdcl"
   solver-version = 1
