@@ -1,0 +1,13 @@
+apiVersion: flux.codesink.net/v1alpha1
+kind: Flux
+metadata:
+  name: flux
+spec:
+  gitUrl: ssh://git@github.com/justinbarrick/fluxcloud
+  gitPath: tests/manifests/
+  gitBranch: master
+  gitPollInterval: 0m30s
+  args:
+    connect: "ws://fluxcloud/"
+  role:
+    enabled: true

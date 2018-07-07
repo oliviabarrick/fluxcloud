@@ -1,10 +1,52 @@
+workspace:
+  base: /go
+  path: src/github.com/justinbarrick/fluxcloud
+
 pipeline:
+  build:
+    image: golang:1.10-alpine
+    commands:
+      - apk update && apk add make git
+      - make test
+      - make build
+    when:
+      event: push
+
   publish:
     image: plugins/docker
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: justinbarrick/fluxcloud
     tags:
-    - latest
-    - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+      - latest
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    when:
+      event: push
+      branch: master
+
+  slack:
+    image: plugins/slack
+    webhook: https://hooks.slack.com/services/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
+    channel: '#kubernetes'
+    username: Drone CI
+    icon_url: https://i.imgur.com/B7Tk2Xf.png
+    when:
+      status: [success, failure]
+      event: push
+    template: >
+      {{#success build.status}}
+        Build <{{build.link}}|#{{build.number}}> for <https://github.com/{{repo.owner}}/{{repo.name}}/tree/{{build.commit}}|{{repo.name}}#{{build.branch}}> by {{build.author}} succeeded!
+      {{else}}
+        Build <{{build.link}}|#{{build.number}}> for <https://github.com/{{repo.owner}}/{{repo.name}}/tree/{{build.commit}}|{{repo.name}}#{{build.branch}}> by {{build.author}} failed.
+      {{/success}}
+
+  slack2:
+    image: plugins/slack
+    webhook: https://hooks.slack.com/services/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
+    channel: '#kubernetes'
+    username: Drone CI Docker Push
+    icon_url: https://i.imgur.com/B7Tk2Xf.png
     when:
       branch: master
+      event: push
+    template: >
+      Pushed <https://hub.docker.com/r/{{repo.owner}}/{{repo.name}}|{{repo.owner}}/{{repo.name}}:${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}> to Dockerhub.
