@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/Masterminds/semver"
+  packages = ["."]
+  revision = "c7af12943936e8c39859482e61f0574c2fd7fc75"
+  version = "v1.4.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
@@ -96,6 +102,20 @@
   version = "v1.2.0"
 
 [[projects]]
+  name = "github.com/justinbarrick/fluxcloud"
+  packages = [
+    "pkg/apis",
+    "pkg/config",
+    "pkg/exporters",
+    "pkg/formatters",
+    "pkg/msg",
+    "pkg/utils",
+    "pkg/utils/test"
+  ]
+  revision = "b6938491ac8d0ee0464b7671d372e5d7cf2c91ac"
+  version = "0.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/kr/logfmt"
   packages = ["."]
@@ -118,6 +138,15 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/pkg/term"
+  packages = [
+    ".",
+    "termios"
+  ]
+  revision = "bffc007b7fd5a70e20e28f5b7649bb84671ef436"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -201,8 +230,8 @@
     "ssh",
     "update"
   ]
-  revision = "891f2a0e99ac2cde8b6340581cb58cbc2cbed142"
-  version = "1.4.2"
+  revision = "78b82e5bd2e0182e8c6ee5d5b983226184f75cd5"
+  version = "1.5.0"
 
 [[projects]]
   branch = "master"
@@ -234,6 +263,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3453e6ea0c2f83b39acefa8a4e330e3b20c52f18e9fa51acca9cef1731d30e50"
+  inputs-digest = "57e17ac1ee64fe941f4dfbec0020ab586d1ae2bf172f9ef5edb0db0cbf110863"
   solver-name = "gps-cdcl"
   solver-version = 1
