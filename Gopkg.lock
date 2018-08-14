@@ -102,20 +102,6 @@
   version = "v1.2.0"
 
 [[projects]]
-  name = "github.com/justinbarrick/fluxcloud"
-  packages = [
-    "pkg/apis",
-    "pkg/config",
-    "pkg/exporters",
-    "pkg/formatters",
-    "pkg/msg",
-    "pkg/utils",
-    "pkg/utils/test"
-  ]
-  revision = "b6938491ac8d0ee0464b7671d372e5d7cf2c91ac"
-  version = "0.2"
-
-[[projects]]
   branch = "master"
   name = "github.com/kr/logfmt"
   packages = ["."]
@@ -263,6 +249,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "57e17ac1ee64fe941f4dfbec0020ab586d1ae2bf172f9ef5edb0db0cbf110863"
+  inputs-digest = "f2f9cec540d420310ea0169c7a6579e1cad9273eb03c282c86ddbb6aa44869bd"
   solver-name = "gps-cdcl"
   solver-version = 1
