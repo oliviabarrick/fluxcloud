@@ -12,12 +12,20 @@ pipeline:
     when:
       event: [push,tag]
 
+  publish-dev:
+    image: plugins/docker
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    repo: justinbarrick/fluxcloud
+    tags:
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    when:
+      event: push
+
   publish:
     image: plugins/docker
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: justinbarrick/fluxcloud
     tags:
-      - latest
       - ${DRONE_TAG}
     when:
       event: tag
