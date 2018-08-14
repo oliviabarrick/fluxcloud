@@ -33,3 +33,26 @@ kubectl apply -f examples/fluxcloud.yaml
 ```
 
 Set the `--connect` flag on Flux to `--connect=ws://fluxcloud`.
+
+# Versioning
+
+Fluxcloud follows semver for versioning, but also publishes development images tagged
+with `$BRANCH-$COMMIT`.
+
+To track release images:
+
+```
+fluxctl policy -c kube-system:deployment/fluxcloud --tag-all='v0*'
+```
+
+To track the latest pre-release images:
+
+```
+fluxctl policy -c kube-system:deployment/fluxcloud --tag-all='master-*'
+```
+
+And then you can automate it:
+
+```
+fluxctl automate -c kube-system:deployment/fluxcloud
+```
