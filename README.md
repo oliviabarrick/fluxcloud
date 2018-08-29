@@ -25,6 +25,7 @@ Set the following environment variables in your chosen deployment:
 * `SLACK_CHANNEL`: the Slack channel to send messages to.
 * `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
 * `GITHUB_URL`: the URL to the Github repository that Flux uses, used for Slack links.
+* `EXPORTER_TYPE` (optional): The type of exporter to use. (Choices: slack, webhook, Default: slack)
 
 And then apply the configuration:
 
