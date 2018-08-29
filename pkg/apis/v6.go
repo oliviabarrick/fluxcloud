@@ -30,8 +30,6 @@ func HandleV6(config APIConfig) error {
 			return
 		}
 
-		messages = append(messages, message)
-
 		err = config.Exporter.Send(config.Client, message)
 		if err != nil {
 			log.Print(err.Error())
