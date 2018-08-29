@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+
 	"github.com/justinbarrick/fluxcloud/pkg/apis"
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/exporters"
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
-	"log"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	exporter, err := exporters.NewSlack(config)
+	exporter, err := exporters.NewWebhook(config)
 	if err != nil {
 		log.Fatal(err)
 	}

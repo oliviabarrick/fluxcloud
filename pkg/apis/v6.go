@@ -2,10 +2,11 @@ package apis
 
 import (
 	"bytes"
-	"github.com/justinbarrick/fluxcloud/pkg/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/justinbarrick/fluxcloud/pkg/utils"
 )
 
 // Handle Flux events
@@ -28,6 +29,8 @@ func HandleV6(config APIConfig) error {
 			w.WriteHeader(200)
 			return
 		}
+
+		messages = append(messages, message)
 
 		err = config.Exporter.Send(config.Client, message)
 		if err != nil {
