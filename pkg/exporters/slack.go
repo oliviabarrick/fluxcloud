@@ -106,3 +106,8 @@ func (s *Slack) NewSlackMessage(message msg.Message) SlackMessage {
 		},
 	}
 }
+
+// Return the name of the exporter.
+func (s *Slack) Name() string {
+	return "Slack"
+}

@@ -150,6 +150,12 @@ func TestSlackSendHTTPError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestSlackName(t *testing.T) {
+
+	slack := Slack{}
+	assert.Equal(t, "Slack", slack.Name())
+}
+
 func TestSlackImplementsExporter(t *testing.T) {
 	_ = Exporter(&Slack{})
 }

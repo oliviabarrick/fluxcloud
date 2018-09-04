@@ -22,3 +22,7 @@ func (f *FakeExporter) NewLine() string {
 func (f *FakeExporter) FormatLink(link string, name string) string {
 	return fmt.Sprintf("<%s|%s>", link, name)
 }
+
+func (f *FakeExporter) Name() string {
+	return "Fake"
+}
