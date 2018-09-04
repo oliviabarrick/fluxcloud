@@ -2,10 +2,11 @@ package apis
 
 import (
 	"bytes"
-	"github.com/justinbarrick/fluxcloud/pkg/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/justinbarrick/fluxcloud/pkg/utils"
 )
 
 // Handle Flux events
