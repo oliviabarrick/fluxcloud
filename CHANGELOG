@@ -1,0 +1,13 @@
+Release v0.2.2:
+
+4bfe03d (Justin Barrick): Add releasing to makefile
+1dbbce9 (Justin): Merge pull request #8 from justinbarrick/webhook-tests
+42db71d (Justin Barrick): Add tests and improve documentation for webhook exporter
+6d0ea46 (Justin): Merge pull request #7 from marratj/webhook
+1625826 (Marcel Juhnke): added EXPORTER_TYPE to readme
+3ce3aea (Marcel Juhnke): added exporter choice
+c7c4c56 (Marcel Juhnke): removed undefined messages (leftover from some testing)
+17f1a0b (Marcel Juhnke): added Webhook exporter (static for now)
+fabe02c (Justin): Merge pull request #5 from justinbarrick/dev-images
+f698864 (Justin Barrick): Publish dev images.
+
