@@ -15,4 +15,7 @@ type Exporter interface {
 
 	// Return a link formatted for the exporter.
 	FormatLink(link string, name string) string
+
+	// Returns the name of the exporter.
+	Name() string
 }

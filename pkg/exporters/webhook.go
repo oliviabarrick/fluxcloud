@@ -63,3 +63,8 @@ func (s *Webhook) NewLine() string {
 func (s *Webhook) FormatLink(link string, name string) string {
 	return fmt.Sprintf("<%s|%s>", link, name)
 }
+
+// Return the name of the exporter.
+func (s *Webhook) Name() string {
+	return "Webhook"
+}

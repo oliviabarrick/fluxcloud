@@ -9,6 +9,26 @@ import (
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
 )
 
+func initExporter(config config.Config) (exporter exporters.Exporter) {
+	exporterType := config.Optional("Exporter_type", "slack")
+
+	var err error
+
+	switch exporterType {
+	case "webhook":
+		exporter, err = exporters.NewWebhook(config)
+	default:
+		exporter, err = exporters.NewSlack(config)
+	}
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Using %s exporter", exporter.Name())
+	return exporter
+}
+
 func main() {
 	log.SetFlags(0)
 
@@ -19,33 +39,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	exporterType := config.Optional("Exporter_type", "slack")
-
-	var slackExporter *exporters.Slack
-	var webhookExporter *exporters.Webhook
-
-	var apiConfig apis.APIConfig
-
-	switch exporterType {
-	case "webhook":
-		log.Println("Using Webhook exporter")
-
-		webhookExporter, err = exporters.NewWebhook(config)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		apiConfig = apis.NewAPIConfig(formatter, webhookExporter, config)
-	default:
-		log.Println("Using Slack exporter")
-
-		slackExporter, err = exporters.NewSlack(config)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		apiConfig = apis.NewAPIConfig(formatter, slackExporter, config)
-	}
+	apiConfig := apis.NewAPIConfig(formatter, initExporter(config), config)
 
 	apis.HandleWebsocket(apiConfig)
 	apis.HandleV6(apiConfig)
