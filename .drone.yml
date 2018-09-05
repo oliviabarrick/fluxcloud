@@ -31,6 +31,17 @@ pipeline:
       event: tag
       branch: master
 
+  github_release:
+    image: plugins/github-release
+    secrets: [ github_token ]
+    files:
+      - fluxcloud
+    checksum:
+      - sha256
+    when:
+      event: tag
+      branch: master
+
   slack:
     image: plugins/slack
     webhook: https://hooks.slack.com/services/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
@@ -51,10 +62,12 @@ pipeline:
     image: plugins/slack
     webhook: https://hooks.slack.com/services/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
     channel: '#kubernetes'
-    username: Drone CI Docker Push
+    username: Fluxcloud Release Bot
     icon_url: https://i.imgur.com/B7Tk2Xf.png
     when:
       branch: master
       event: tag
     template: >
+      Released ${DRONE_TAG} to <https://github.com/{{repo.owner}}/{{repo.name}}/releases/tag/${DRONE_TAG}|Github>.
+
       Pushed <https://hub.docker.com/r/{{repo.owner}}/{{repo.name}}|{{repo.owner}}/{{repo.name}}:${DRONE_TAG}> to Dockerhub.
