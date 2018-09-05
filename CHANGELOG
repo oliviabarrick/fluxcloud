@@ -1,3 +1,8 @@
+Release v0.2.7:
+
+663b6e5 (Justin Barrick): Release v0.2.6
+00b331c (Justin Barrick): Add release artifacts and automatically create github releases on tagged commits.
+
 Release v0.2.6:
 
 00b331c (Justin Barrick): Add release artifacts and automatically create github releases on tagged commits.
