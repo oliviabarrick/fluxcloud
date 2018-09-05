@@ -32,6 +32,44 @@ func NewFluxSyncEvent() fluxevent.Event {
 	return event
 }
 
+func NewFluxSyncErrorEvent() fluxevent.Event {
+	event, _ := utils.ParseFluxEvent(bytes.NewBufferString(`{
+  "id": 0,
+  "serviceIDs": [
+    "default:persistentvolumeclaim/test"
+  ],
+  "type": "sync",
+  "startedAt": "2018-09-05T01:44:17.427541601Z",
+  "endedAt": "2018-09-05T01:44:17.427541601Z",
+  "logLevel": "info",
+  "metadata": {
+    "commits": [
+      {
+        "revision": "4997efcd4ac6255604d0d44eeb7085c5b0eb9d48",
+        "message": "create invalid resource"
+      }
+    ],
+    "includes": {
+      "other": true
+    },
+    "errors": [
+      {
+        "ID": "default:persistentvolumeclaim/test",
+        "Path": "manifests/test.yaml",
+        "Error": "running kubectl: The PersistentVolumeClaim \"test\" is invalid: spec: Forbidden: field is immutable after creation"
+      },
+      {
+        "ID": "default:persistentvolumeclaim/lol",
+        "Path": "manifests/lol.yaml",
+        "Error": "running kubectl: The PersistentVolumeClaim \"lol\" is invalid: spec: Forbidden: field is immutable after creation"
+      }
+    ]
+  }
+}`))
+
+	return event
+}
+
 func NewFluxCommitEvent() fluxevent.Event {
 	event, _ := utils.ParseFluxEvent(bytes.NewBufferString(`{
     "id": 0,
