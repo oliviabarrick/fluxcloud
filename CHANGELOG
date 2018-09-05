@@ -1,3 +1,10 @@
+Release v0.2.5:
+
+f9ad303 (Justin): Merge pull request #9 from justinbarrick/raise-sync-errors
+fbab6e4 (Justin Barrick): Include sync errors in event summaries.
+b3a5d0a (Justin Barrick): Add git semver configuration.
+cbffdcc (Justin Barrick): DEBUG -> DRYRUN
+
 Release v0.2.2:
 
 4bfe03d (Justin Barrick): Add releasing to makefile
