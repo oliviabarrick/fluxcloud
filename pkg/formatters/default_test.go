@@ -99,3 +99,36 @@ Resources updated:
 
 * default:deployment/test`, msg.Body)
 }
+
+func TestDefaultFormatterFormatSyncErrorEvent(t *testing.T) {
+	d := DefaultFormatter{
+		vcsLink: "https://github.com",
+	}
+
+	event := test_utils.NewFluxSyncErrorEvent()
+
+	msg := d.FormatEvent(event, &exporters.FakeExporter{})
+	assert.Equal(t, "https://github.com/commit/4997efcd4ac6255604d0d44eeb7085c5b0eb9d48", msg.TitleLink)
+	assert.Equal(t, "Applied flux changes to cluster", msg.Title)
+	assert.Equal(t, fluxevent.EventSync, msg.Type)
+	assert.Equal(t, `Event: Sync: 4997efc, default:persistentvolumeclaim/test
+Commits: 
+
+* <https://github.com/commit/4997efcd4ac6255604d0d44eeb7085c5b0eb9d48|4997efc>: create invalid resource
+
+Resources updated:
+
+* default:persistentvolumeclaim/test
+
+Errors:
+
+Resource default:persistentvolumeclaim/test, file: manifests/test.yaml:
+
+> running kubectl: The PersistentVolumeClaim "test" is invalid: spec: Forbidden: field is immutable after creation
+
+Resource default:persistentvolumeclaim/lol, file: manifests/lol.yaml:
+
+> running kubectl: The PersistentVolumeClaim "lol" is invalid: spec: Forbidden: field is immutable after creation
+`, msg.Body)
+	assert.Equal(t, event, msg.Event)
+}

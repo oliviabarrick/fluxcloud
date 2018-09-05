@@ -31,6 +31,7 @@ func NewDefaultFormatter(config config.Config) (*DefaultFormatter, error) {
 func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.Exporter) msg.Message {
 	newLine := exporter.NewLine()
 	body := fmt.Sprintf("Event: %s%s", event.String(), newLine)
+	errorBody := ""
 	commit_id := ""
 
 	if len(event.ServiceIDs) == 0 {
@@ -52,6 +53,14 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 		}
 
 		body += newLine
+
+		if len(metadata.Errors) > 0 {
+			errorBody += "Errors:\n"
+
+			for _, err := range metadata.Errors {
+				errorBody = fmt.Sprintf("%s\nResource %s, file: %s:\n\n> %s\n", errorBody, err.ID, err.Path, err.Error)
+			}
+		}
 	case fluxevent.EventCommit:
 		metadata := event.Metadata.(*fluxevent.CommitEventMetadata)
 		commit_id = metadata.Revision
@@ -61,6 +70,10 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 	body += fmt.Sprintf("%sResources updated:%s", newLine, newLine)
 	for _, serviceId := range event.ServiceIDStrings() {
 		body += fmt.Sprintf("%s* %s", newLine, serviceId)
+	}
+
+	if len(errorBody) != 0 {
+		body += fmt.Sprintf("\n\n%s", errorBody)
 	}
 
 	if commit_id != "" {
