@@ -27,6 +27,7 @@ pipeline:
     repo: justinbarrick/fluxcloud
     tags:
       - ${DRONE_TAG}
+      - latest
     when:
       event: tag
       branch: master
