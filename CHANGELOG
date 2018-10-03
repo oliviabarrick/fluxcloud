@@ -1,3 +1,11 @@
+Release v0.2.9:
+
+039ea8a (Justin): Merge pull request #12 from simba-sleep/add-formatter-templates
+23f21d2 (George Antoniadis): Add image changes to tpl values
+b5a1fd9 (George Antoniadis): Add tpl func map
+18a374b (George Antoniadis): Add templates for default formatter
+4e11ba7 (Justin): Add license, fixes #11
+
 Release v0.2.8:
 
 b560c2d (Justin Barrick): publish latest image
