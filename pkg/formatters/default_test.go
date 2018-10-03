@@ -1,20 +1,25 @@
 package formatters
 
 import (
+	"testing"
+
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/exporters"
 	"github.com/justinbarrick/fluxcloud/pkg/utils/test"
 	"github.com/stretchr/testify/assert"
 	fluxevent "github.com/weaveworks/flux/event"
-	"testing"
 )
 
 func TestNewDefaultFormatter(t *testing.T) {
 	config := config.NewFakeConfig()
 	config.Set("github_url", "https://github.com/")
+	config.Set("body_template", bodyTemplate)
+	config.Set("title_template", titleTemplate)
 
 	formatter, err := NewDefaultFormatter(config)
 	assert.Nil(t, err)
+	assert.Equal(t, bodyTemplate, formatter.bodyTemplate)
+	assert.Equal(t, titleTemplate, formatter.titleTemplate)
 	assert.Equal(t, "https://github.com/", formatter.vcsLink)
 	assert.Equal(t, config, formatter.config)
 }
@@ -32,7 +37,9 @@ func TestDefaultFormatterImplementsFormatter(t *testing.T) {
 
 func TestDefaultFormatterFormatSyncEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink: "https://github.com",
+		vcsLink:       "https://github.com",
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}
 
 	event := test_utils.NewFluxSyncEvent()
@@ -42,7 +49,7 @@ func TestDefaultFormatterFormatSyncEvent(t *testing.T) {
 	assert.Equal(t, "Applied flux changes to cluster", msg.Title)
 	assert.Equal(t, fluxevent.EventSync, msg.Type)
 	assert.Equal(t, `Event: Sync: 810c2e6, default:deployment/test
-Commits: 
+Commits:
 
 * <https://github.com/commit/810c2e6f22ac5ab7c831fe0dd697fe32997b098f|810c2e6>: change test image
 
@@ -54,7 +61,9 @@ Resources updated:
 
 func TestDefaultFormatterFormatCommitEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink: "https://github.com",
+		vcsLink:       "https://github.com",
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxCommitEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
@@ -67,9 +76,46 @@ Resources updated:
 * default:deployment/test`, msg.Body)
 }
 
-func TestDefaultFormatterFormatAutoReleaseEvent(t *testing.T) {
+func TestDefaultFormatterCustomTemplates(t *testing.T) {
 	d := DefaultFormatter{
 		vcsLink: "https://github.com",
+		bodyTemplate: `
+{{ if or (eq .EventType "commit") (eq .EventType "autorelease")}}
+{{ if (gt (len .EventServiceIDs) 0) }}Resources updated:{{ range .EventServiceIDs }}
+* {{ . }}
+{{ end }}{{ end }}
+{{ end }}`,
+		titleTemplate: `
+{{ if eq .EventType "commit" }}Applying changes from commit{{ end }}
+{{ if eq .EventType "autorelease" }}Auto releasing resource{{ end }}`,
+	}
+
+	msg := d.FormatEvent(test_utils.NewFluxCommitEvent(), &exporters.FakeExporter{})
+	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
+	assert.Equal(t, "Applying changes from commit", msg.Title)
+	assert.Equal(t, fluxevent.EventCommit, msg.Type)
+	assert.Equal(t, `Resources updated:
+* default:deployment/test`, msg.Body)
+
+	msg = d.FormatEvent(test_utils.NewFluxAutoReleaseEvent(), &exporters.FakeExporter{})
+	assert.Equal(t, "https://github.com", msg.TitleLink)
+	assert.Equal(t, "Auto releasing resource", msg.Title)
+	assert.Equal(t, fluxevent.EventAutoRelease, msg.Type)
+	assert.Equal(t, `Resources updated:
+* default:deployment/test`, msg.Body)
+
+	msg = d.FormatEvent(test_utils.NewFluxUpdatePolicyEvent(), &exporters.FakeExporter{})
+	assert.Equal(t, "", msg.TitleLink)
+	assert.Equal(t, "", msg.Title)
+	assert.Equal(t, "", msg.Type)
+	assert.Equal(t, "", msg.Body)
+}
+
+func TestDefaultFormatterFormatAutoReleaseEvent(t *testing.T) {
+	d := DefaultFormatter{
+		vcsLink:       "https://github.com",
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxAutoReleaseEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com", msg.TitleLink)
@@ -84,14 +130,16 @@ Resources updated:
 
 func TestDefaultFormatterFormatUpdatePolicyEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink: "https://github.com",
+		vcsLink:       "https://github.com",
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxUpdatePolicyEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
 	assert.Equal(t, "Applied flux changes to cluster", msg.Title)
 	assert.Equal(t, fluxevent.EventSync, msg.Type)
 	assert.Equal(t, `Event: Sync: d644e1a, default:deployment/test
-Commits: 
+Commits:
 
 * <https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036|d644e1a>: Automated: default:deployment/test
 
@@ -102,7 +150,9 @@ Resources updated:
 
 func TestDefaultFormatterFormatSyncErrorEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink: "https://github.com",
+		vcsLink:       "https://github.com",
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}
 
 	event := test_utils.NewFluxSyncErrorEvent()
@@ -112,7 +162,7 @@ func TestDefaultFormatterFormatSyncErrorEvent(t *testing.T) {
 	assert.Equal(t, "Applied flux changes to cluster", msg.Title)
 	assert.Equal(t, fluxevent.EventSync, msg.Type)
 	assert.Equal(t, `Event: Sync: 4997efc, default:persistentvolumeclaim/test
-Commits: 
+Commits:
 
 * <https://github.com/commit/4997efcd4ac6255604d0d44eeb7085c5b0eb9d48|4997efc>: create invalid resource
 
@@ -128,7 +178,6 @@ Resource default:persistentvolumeclaim/test, file: manifests/test.yaml:
 
 Resource default:persistentvolumeclaim/lol, file: manifests/lol.yaml:
 
-> running kubectl: The PersistentVolumeClaim "lol" is invalid: spec: Forbidden: field is immutable after creation
-`, msg.Body)
+> running kubectl: The PersistentVolumeClaim "lol" is invalid: spec: Forbidden: field is immutable after creation`, msg.Body)
 	assert.Equal(t, event, msg.Event)
 }
