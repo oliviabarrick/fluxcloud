@@ -12,6 +12,7 @@ import (
 	"github.com/justinbarrick/fluxcloud/pkg/msg"
 	"github.com/weaveworks/flux"
 	fluxevent "github.com/weaveworks/flux/event"
+	"github.com/weaveworks/flux/update"
 )
 
 const (
@@ -44,18 +45,20 @@ type DefaultFormatter struct {
 }
 
 type tplValues struct {
-	VCSLink         string
-	EventID         fluxevent.EventID
-	EventServiceIDs []flux.ResourceID
-	EventType       string
-	EventStartedAt  time.Time
-	EventEndedAt    time.Time
-	EventLogLevel   string
-	EventMessage    string
-	EventString     string
-	Commits         []fluxevent.Commit
-	Errors          []fluxevent.ResourceError
-	FormatLink      func(string, string) string
+	VCSLink            string
+	EventID            fluxevent.EventID
+	EventServiceIDs    []flux.ResourceID
+	EventChangedImages []string
+	EventResult        map[flux.ResourceID]update.ControllerResult
+	EventType          string
+	EventStartedAt     time.Time
+	EventEndedAt       time.Time
+	EventLogLevel      string
+	EventMessage       string
+	EventString        string
+	Commits            []fluxevent.Commit
+	Errors             []fluxevent.ResourceError
+	FormatLink         func(string, string) string
 }
 
 var (
@@ -117,17 +120,19 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 	}
 
 	values := &tplValues{
-		VCSLink:         d.vcsLink,
-		EventID:         event.ID,
-		EventServiceIDs: event.ServiceIDs,
-		EventType:       event.Type,
-		EventStartedAt:  event.StartedAt,
-		EventEndedAt:    event.EndedAt,
-		EventLogLevel:   event.LogLevel,
-		EventMessage:    event.Message,
-		EventString:     event.String(),
-		Commits:         getCommits(event.Metadata),
-		Errors:          getErrors(event.Metadata),
+		VCSLink:            d.vcsLink,
+		EventID:            event.ID,
+		EventServiceIDs:    event.ServiceIDs,
+		EventChangedImages: getChangedImages(event.Metadata),
+		EventResult:        getResult(event.Metadata),
+		EventType:          event.Type,
+		EventStartedAt:     event.StartedAt,
+		EventEndedAt:       event.EndedAt,
+		EventLogLevel:      event.LogLevel,
+		EventMessage:       event.Message,
+		EventString:        event.String(),
+		Commits:            getCommits(event.Metadata),
+		Errors:             getErrors(event.Metadata),
 		FormatLink: func(link, text string) string {
 			return exporter.FormatLink(link, text)
 		},
@@ -178,7 +183,11 @@ func execTemplate(tpl string, values interface{}, nl string) string {
 
 	body := bodyBytes.String()
 	body = strings.TrimSpace(body)
-	body = strings.Replace(body, "\n", nl, -1)
+	lines := strings.Split(body, "\n")
+	for i, line := range lines {
+		lines[i] = strings.TrimSpace(line)
+	}
+	body = strings.Join(lines, nl)
 
 	return body
 }
@@ -195,6 +204,28 @@ func getCommits(meta fluxevent.EventMetadata) []fluxevent.Commit {
 		return v.Commits
 	default:
 		return []fluxevent.Commit{}
+	}
+}
+
+func getResult(meta fluxevent.EventMetadata) map[flux.ResourceID]update.ControllerResult {
+	switch v := meta.(type) {
+	case *fluxevent.AutoReleaseEventMetadata:
+		return v.Result
+	case *fluxevent.ReleaseEventMetadata:
+		return v.Result
+	default:
+		return update.Result{}
+	}
+}
+
+func getChangedImages(meta fluxevent.EventMetadata) []string {
+	switch v := meta.(type) {
+	case *fluxevent.AutoReleaseEventMetadata:
+		return v.Result.ChangedImages()
+	case *fluxevent.ReleaseEventMetadata:
+		return v.Result.ChangedImages()
+	default:
+		return []string{}
 	}
 }
 
