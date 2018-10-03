@@ -2,9 +2,9 @@ package formatters
 
 import (
 	"bytes"
-	"html/template"
 	"log"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/justinbarrick/fluxcloud/pkg/config"
@@ -20,7 +20,7 @@ const (
 Event: {{ .EventString }}
 {{ if and (ne .EventType "commit") (gt (len .Commits) 0) }}Commits:
 {{ range .Commits }}
-* {{ call $.FormatLink (print $.VCSLink "/commit/" .Revision) (printf "%.7s" .Revision) }}: {{ .Message }}
+* {{ call $.FormatLink (print $.VCSLink "/commit/" .Revision) (truncate .Revision 7) }}: {{ .Message }}
 {{end}}{{end}}
 {{ if (gt (len .EventServiceIDs) 0) }}Resources updated:
 {{ range .EventServiceIDs }}
@@ -30,7 +30,7 @@ Event: {{ .EventString }}
 {{ range .Errors }}
 Resource {{ .ID }}, file: {{ .Path }}:
 
-> {{ call $.FormatError .Error }}
+> {{ .Error }}
 {{ end }}{{ end }}
 `
 )
@@ -43,6 +43,45 @@ type DefaultFormatter struct {
 	titleTemplate string
 }
 
+type tplValues struct {
+	VCSLink         string
+	EventID         fluxevent.EventID
+	EventServiceIDs []flux.ResourceID
+	EventType       string
+	EventStartedAt  time.Time
+	EventEndedAt    time.Time
+	EventLogLevel   string
+	EventMessage    string
+	EventString     string
+	Commits         []fluxevent.Commit
+	Errors          []fluxevent.ResourceError
+	FormatLink      func(string, string) string
+}
+
+var (
+	tplFuncMap = template.FuncMap{
+		"replace": func(input, from, to string) string {
+			return strings.Replace(input, from, to, -1)
+		},
+		"trim": func(input string) string {
+			return strings.TrimSpace(input)
+		},
+		"contains": func(input, substr string) bool {
+			return strings.Contains(input, substr)
+		},
+		"truncate": func(s string, max int) string {
+			var numRunes = 0
+			for i := range s {
+				numRunes++
+				if numRunes > max {
+					return s[:i]
+				}
+			}
+			return s
+		},
+	}
+)
+
 // Create a DefaultFormatter
 func NewDefaultFormatter(config config.Config) (*DefaultFormatter, error) {
 	vcsLink, err := config.Required("github_url")
@@ -50,11 +89,24 @@ func NewDefaultFormatter(config config.Config) (*DefaultFormatter, error) {
 		return nil, err
 	}
 
+	bodyTemplate := config.Optional("body_template", bodyTemplate)
+	titleTemplate := config.Optional("title_template", titleTemplate)
+
+	if err := checkTemplate(bodyTemplate); err != nil {
+		log.Println(bodyTemplate)
+		return nil, err
+	}
+
+	if err := checkTemplate(titleTemplate); err != nil {
+		log.Println(titleTemplate)
+		return nil, err
+	}
+
 	return &DefaultFormatter{
 		config:        config,
 		vcsLink:       vcsLink,
-		bodyTemplate:  config.Optional("body_template", bodyTemplate),
-		titleTemplate: config.Optional("title_template", titleTemplate),
+		bodyTemplate:  bodyTemplate,
+		titleTemplate: titleTemplate,
 	}, nil
 }
 
@@ -64,37 +116,20 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 		return msg.Message{}
 	}
 
-	values := struct {
-		VCSLink         string
-		EventID         fluxevent.EventID
-		EventServiceIDs []flux.ResourceID
-		EventType       template.HTML
-		EventStartedAt  time.Time
-		EventEndedAt    time.Time
-		EventLogLevel   template.HTML
-		EventMessage    template.HTML
-		EventString     template.HTML
-		Commits         []fluxevent.Commit
-		Errors          []fluxevent.ResourceError
-		FormatError     func(string) template.HTML
-		FormatLink      func(string, string) template.HTML
-	}{
+	values := &tplValues{
 		VCSLink:         d.vcsLink,
 		EventID:         event.ID,
 		EventServiceIDs: event.ServiceIDs,
-		EventType:       template.HTML(event.Type),
+		EventType:       event.Type,
 		EventStartedAt:  event.StartedAt,
 		EventEndedAt:    event.EndedAt,
-		EventLogLevel:   template.HTML(event.LogLevel),
-		EventMessage:    template.HTML(event.Message),
-		EventString:     template.HTML(event.String()),
+		EventLogLevel:   event.LogLevel,
+		EventMessage:    event.Message,
+		EventString:     event.String(),
 		Commits:         getCommits(event.Metadata),
 		Errors:          getErrors(event.Metadata),
-		FormatError: func(text string) template.HTML {
-			return template.HTML(text)
-		},
-		FormatLink: func(link, text string) template.HTML {
-			return template.HTML(exporter.FormatLink(link, text))
+		FormatLink: func(link, text string) string {
+			return exporter.FormatLink(link, text)
 		},
 	}
 
@@ -102,8 +137,8 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 
 	message := msg.Message{
 		TitleLink: d.vcsLink,
-		Title:     parseTemplate(d.titleTemplate, values, nl),
-		Body:      parseTemplate(d.bodyTemplate, values, nl),
+		Title:     execTemplate(d.titleTemplate, values, nl),
+		Body:      execTemplate(d.bodyTemplate, values, nl),
 		Type:      event.Type,
 		Event:     event,
 	}
@@ -120,12 +155,24 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 	return message
 }
 
-func parseTemplate(tpl string, values interface{}, nl string) string {
+func checkTemplate(tpl string) error {
+	bodyTpl := template.New("tpl").Funcs(tplFuncMap)
+	_, err := bodyTpl.Parse(tpl)
+	return err
+}
+
+func execTemplate(tpl string, values interface{}, nl string) string {
 	bodyBytes := &bytes.Buffer{}
-	bodyTpl := template.New("")
-	bodyTpl, _ = bodyTpl.Parse(tpl)
+
+	var err error
+	bodyTpl := template.New("tpl").Funcs(tplFuncMap)
+	bodyTpl, err = bodyTpl.Parse(tpl)
+	if err != nil {
+		log.Panicln("could not parse template")
+	}
+
 	if err := bodyTpl.Execute(bodyBytes, values); err != nil {
-		log.Println("could not execute body template:", err)
+		log.Println("could not execute template:", err)
 		return ""
 	}
 
