@@ -60,10 +60,8 @@ func NewSlack(config config.Config) (*Slack, error) {
 			return nil, err
 		}
 		s.Channels = append(s.Channels, SlackChannel{channel, "*"})
-	}
-	if channels != "" {
-		err := s.unmarshallChannels(channels)
-		if err != nil {
+	} else {
+		if err := s.unmarshallChannels(channels); err != nil {
 			return nil, err
 		}
 	}

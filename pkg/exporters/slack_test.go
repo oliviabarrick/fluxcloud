@@ -3,8 +3,10 @@ package exporters
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"syscall"
 	"testing"
 
 	"github.com/weaveworks/flux"
@@ -14,6 +16,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	fluxevent "github.com/weaveworks/flux/event"
 )
+
+var testSlack = Slack{
+	Channels: []SlackChannel{
+		SlackChannel{"#channel", "*"},
+		SlackChannel{"#namespace", "namespace"},
+	},
+	IconEmoji: ":weave:",
+	Username:  "My Username",
+}
 
 func TestSlackDefault(t *testing.T) {
 	config := config.NewFakeConfig()
@@ -45,6 +56,27 @@ func TestSlackOverrides(t *testing.T) {
 	assert.Equal(t, ":weave:", slack.IconEmoji)
 }
 
+func TestSlackChannelPath(t *testing.T) {
+	f, err := ioutil.TempFile("", "channels.json")
+	if err != nil {
+		panic(err)
+	}
+	defer syscall.Unlink(f.Name())
+	ioutil.WriteFile(f.Name(), []byte("[{\"channel\":\"#mychannel\",\"namespace\":\"*\"},{\"channel\":\"#namespace\",\"namespace\":\"namespace\"}]"), 0644)
+
+	config := config.NewFakeConfig()
+	config.Set("slack_url", "https://myslack/")
+	config.Set("slack_channel_path", f.Name())
+
+	slack, err := NewSlack(config)
+	assert.Nil(t, err)
+
+	assert.Equal(t, []SlackChannel{
+		SlackChannel{"#mychannel", "*"},
+		SlackChannel{"#namespace", "namespace"},
+	}, slack.Channels)
+}
+
 func TestSlackMissingChannel(t *testing.T) {
 	config := config.NewFakeConfig()
 	config.Set("slack_url", "https://myslack/")
@@ -72,14 +104,6 @@ func TestSlackFormatLink(t *testing.T) {
 }
 
 func TestNewSlackMessage(t *testing.T) {
-	slack := Slack{
-		Channels: []SlackChannel{
-			SlackChannel{"#channel", "*"},
-			SlackChannel{"#namespace", "namespace"},
-		},
-		IconEmoji: ":weave:",
-		Username:  "My Username",
-	}
 	defaultResourceID, _ := flux.ParseResourceID("default:resource/name")
 	nsResourceID, _ := flux.ParseResourceID("namespace:resource/name")
 	message := msg.Message{
@@ -94,13 +118,13 @@ func TestNewSlackMessage(t *testing.T) {
 		},
 	}
 
-	slackMessages := slack.NewSlackMessage(message)
+	slackMessages := testSlack.NewSlackMessage(message)
 	assert.Len(t, slackMessages, 2)
 
 	assert.Equal(t, "#channel", slackMessages[0].Channel)
 	assert.Equal(t, "#namespace", slackMessages[1].Channel)
-	assert.Equal(t, slack.IconEmoji, slackMessages[0].IconEmoji)
-	assert.Equal(t, slack.Username, slackMessages[0].Username)
+	assert.Equal(t, testSlack.IconEmoji, slackMessages[0].IconEmoji)
+	assert.Equal(t, testSlack.Username, slackMessages[0].Username)
 
 	attach := slackMessages[0].Attachments[0]
 	assert.Equal(t, "#4286f4", attach.Color)
@@ -109,14 +133,6 @@ func TestNewSlackMessage(t *testing.T) {
 }
 
 func TestSlackSend(t *testing.T) {
-	slack := Slack{
-		Channels: []SlackChannel{
-			SlackChannel{"#mychannel", "*"},
-		},
-		IconEmoji: ":weave:",
-		Username:  "My Username",
-	}
-
 	resourceID, _ := flux.ParseResourceID("namespace:resource/name")
 	message := msg.Message{
 		TitleLink: "https://myvcslink/",
@@ -137,19 +153,14 @@ func TestSlackSend(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	slack.Url = ts.URL
+	testSlack.Url = ts.URL
 
-	err := slack.Send(&http.Client{}, message)
+	err := testSlack.Send(&http.Client{}, message)
 	assert.Nil(t, err)
-	assert.Equal(t, slack.NewSlackMessage(message)[0], slackMessage)
+	assert.Contains(t, testSlack.NewSlackMessage(message), slackMessage)
 }
 
 func TestSlackSendNon200(t *testing.T) {
-	slack := Slack{
-		Channels: []SlackChannel{
-			SlackChannel{"#mychannel", "*"},
-		},
-	}
 	resourceID, _ := flux.ParseResourceID("namespace:resource/name")
 	message := msg.Message{
 		Event: fluxevent.Event{
@@ -158,24 +169,18 @@ func TestSlackSendNon200(t *testing.T) {
 			},
 		},
 	}
-
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
 	defer ts.Close()
 
-	slack.Url = ts.URL
+	testSlack.Url = ts.URL
 
-	err := slack.Send(&http.Client{}, message)
+	err := testSlack.Send(&http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
 func TestSlackSendHTTPError(t *testing.T) {
-	slack := Slack{
-		Channels: []SlackChannel{
-			SlackChannel{"#mychannel", "*"},
-		},
-	}
 	resourceID, _ := flux.ParseResourceID("namespace:resource/name")
 	message := msg.Message{
 		Event: fluxevent.Event{
@@ -191,9 +196,9 @@ func TestSlackSendHTTPError(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	slack.Url = ts.URL
+	testSlack.Url = ts.URL
 
-	err := slack.Send(&http.Client{}, message)
+	err := testSlack.Send(&http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
