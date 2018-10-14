@@ -3,14 +3,15 @@ package apis
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/exporters"
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
 	"github.com/justinbarrick/fluxcloud/pkg/utils/test"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 func TestSlackIntegrationTest(t *testing.T) {
@@ -28,7 +29,7 @@ func TestSlackIntegrationTest(t *testing.T) {
 		sent := exporters.SlackMessage{}
 		json.NewDecoder(r.Body).Decode(&sent)
 		formatted := exporter.NewSlackMessage(formatter.FormatEvent(event, exporter))
-		assert.Equal(t, sent, formatted)
+		assert.Equal(t, sent, formatted[0])
 		reqCount += 1
 	}))
 	defer ts.Close()

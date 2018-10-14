@@ -2,8 +2,9 @@ package utils
 
 import (
 	"encoding/json"
-	fluxevent "github.com/weaveworks/flux/event"
 	"io"
+
+	fluxevent "github.com/weaveworks/flux/event"
 )
 
 // Parse a flux event from Json into a flux Event struct.
