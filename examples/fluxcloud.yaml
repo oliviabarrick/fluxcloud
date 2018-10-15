@@ -35,39 +35,12 @@ spec:
           value: "https://hooks.slack.com/services/WEBHOOK_URL"
         - name: SLACK_CHANNEL
           value: "#kubernetes"
+        # Or configure multiple channels
+        # (comma separated <channel>=<namespace>) string:
+        #  value: "#kubernetes=*,#team=team"
         - name: SLACK_USERNAME
           value: Flux Deployer
         - name: SLACK_ICON_EMOJI
           value: ":heart:"
         - name: GITHUB_URL
           value: "https://github.com/justinbarrick/fluxcloud/"
-# Uncomment the lines below and update the ConfigMap to enable
-# sending notifications to multiple Slack channels based upon
-# the namespace from the created and/or updated resources.
-#         - name: SLACK_CHANNEL_PATH
-#           value: "/etc/config/channels.json"
-#         volumeMounts:
-#         - name: slack-config
-#           mountPath: /etc/config/
-#           readOnly: true
-#       volumes:
-#       - name: slack-config
-#         configMap:
-#           name: fluxcloud-channels
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: fluxcloud-slack
-# data:
-#   channels.json: |
-#     [
-#       {
-#         "namespace": "*",
-#         "channel": "#general"
-#       },
-#       {
-#         "namespace": "team",
-#         "channel": "#team"
-#       }
-#     ]

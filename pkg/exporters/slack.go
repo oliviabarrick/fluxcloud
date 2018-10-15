@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
+	"regexp"
+	"strings"
 
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/msg"
@@ -53,18 +53,11 @@ func NewSlack(config config.Config) (*Slack, error) {
 		return nil, err
 	}
 
-	channels := config.Optional("slack_channel_path", "")
-	if channels == "" {
-		channel, err := config.Required("slack_channel")
-		if err != nil {
-			return nil, err
-		}
-		s.Channels = append(s.Channels, SlackChannel{channel, "*"})
-	} else {
-		if err := s.unmarshallChannels(channels); err != nil {
-			return nil, err
-		}
+	channels, err := config.Required("slack_channel")
+	if err != nil {
+		return nil, err
 	}
+	s.parseSlackChannelConfig(channels)
 	log.Println(s.Channels)
 
 	s.Username = config.Optional("slack_username", "Flux Deployer")
@@ -139,16 +132,24 @@ func (s *Slack) Name() string {
 	return "Slack"
 }
 
-func (s *Slack) unmarshallChannels(configPath string) error {
-	f, err := os.Open(configPath)
-	defer f.Close()
-	if err != nil {
-		return err
+// Parse the channel configuration string in a backwards
+// compatible manner.
+func (s *Slack) parseSlackChannelConfig(channels string) error {
+	if len(strings.Split(channels, "=")) == 1 {
+		s.Channels = append(s.Channels, SlackChannel{channels, "*"})
+		return nil
 	}
 
-	b, _ := ioutil.ReadAll(f)
-	if err := json.Unmarshal(b, &s.Channels); err != nil {
-		return err
+	re := regexp.MustCompile("([#a-z0-9][a-z0-9._-]*)=([a-z0-9*][-A-Za-z0-9_.]*)")
+	for _, kv := range strings.Split(channels, ",") {
+		if !re.MatchString(kv) {
+			return fmt.Errorf("Could not parse channel/namespace configuration: %s", kv)
+		}
+
+		cn := strings.Split(kv, "=")
+		channel := strings.TrimSpace(cn[0])
+		namespace := strings.TrimSpace(cn[1])
+		s.Channels = append(s.Channels, SlackChannel{channel, namespace})
 	}
 
 	return nil

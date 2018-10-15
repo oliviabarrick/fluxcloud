@@ -3,10 +3,8 @@ package exporters
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"syscall"
 	"testing"
 
 	"github.com/weaveworks/flux"
@@ -43,7 +41,7 @@ func TestSlackDefault(t *testing.T) {
 func TestSlackOverrides(t *testing.T) {
 	config := config.NewFakeConfig()
 	config.Set("slack_url", "https://myslack/")
-	config.Set("slack_channel", "#mychannel")
+	config.Set("slack_channel", "#mychannel=namespace")
 	config.Set("slack_username", "my user")
 	config.Set("slack_icon_emoji", ":weave:")
 
@@ -51,22 +49,15 @@ func TestSlackOverrides(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, "https://myslack/", slack.Url)
-	assert.Equal(t, []SlackChannel{SlackChannel{"#mychannel", "*"}}, slack.Channels)
+	assert.Equal(t, []SlackChannel{SlackChannel{"#mychannel", "namespace"}}, slack.Channels)
 	assert.Equal(t, "my user", slack.Username)
 	assert.Equal(t, ":weave:", slack.IconEmoji)
 }
 
-func TestSlackChannelPath(t *testing.T) {
-	f, err := ioutil.TempFile("", "channels.json")
-	if err != nil {
-		panic(err)
-	}
-	defer syscall.Unlink(f.Name())
-	ioutil.WriteFile(f.Name(), []byte("[{\"channel\":\"#mychannel\",\"namespace\":\"*\"},{\"channel\":\"#namespace\",\"namespace\":\"namespace\"}]"), 0644)
-
+func TestSlackChannel(t *testing.T) {
 	config := config.NewFakeConfig()
 	config.Set("slack_url", "https://myslack/")
-	config.Set("slack_channel_path", f.Name())
+	config.Set("slack_channel", "#mychannel=*, #namespace=namespace")
 
 	slack, err := NewSlack(config)
 	assert.Nil(t, err)

@@ -42,32 +42,19 @@ one already, feel free to contribute one by implementing the [exporter interface
 ## Slack
 
 The default exporter to use is Slack. To use the Slack exporter, set the `SLACK_URL`,
-`SLACK_USERNAME`, and `SLACK_CHANNEL` or `SLACK_CHANNEL_PATH` environment variables to
+`SLACK_USERNAME`, and `SLACK_CHANNEL` environment variables to
 use. You can also optionally set the `EXPORTER_TYPE` to "slack".
 
 ### Sending notifications to multiple channels
 
 If sending notifications to only one channel is unsufficient for your use case you can
 configure fluxcloud to send them to multiple channels based upon the namespace(s) from
-the created and/or updated resources. This is done by providing the path to a JSON config
-using the `SLACK_CHANNEL_PATH` environment variable.
+the created and/or updated resources. This is done by setting a comma separated
+`<channel>=<namespace>` string as the `SLACK_CHANNEL` environment variable.
 
-The formatting of the JSON should look like this:
-
-```json
-[
-    {
-        "channel": "#team",
-        "namespace": "team"
-    },
-    {
-        "channel": "#all-namespaces",
-        "namespace": "*"
-    }
-]
-```
-
-`"namespace": "*"` will skip filtering and send all notifications to the channel.
+If you for example want to send notifications of all events to `#k8s-events` but only
+events from namespace `team-b` to `#teamb` you would set the following string:
+`SLACK_CHANNEL=#k8s-events=*,#team-b=team-b`.
 
 ## Webhooks
 
