@@ -67,6 +67,9 @@ spec:
           value: "https://hooks.slack.com/services/WEBHOOK_DATA"
         - name: SLACK_CHANNEL
           value: "#kubernetes"
+        # Or configure multiple channels
+        # (comma separated <channel>=<namespace>) string:
+        #  value: "#kubernetes=*,#team=team"
         - name: SLACK_USERNAME
           value: Flux Deployer
         - name: SLACK_ICON_EMOJI
