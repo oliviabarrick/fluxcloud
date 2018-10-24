@@ -1,3 +1,7 @@
+Release 0.1.0:
+
+ca46711 (Justin Barrick): Update for latest git-semver.
+
 Release v0.2.10:
 
 a5ab296 (Justin): Merge pull request #14 from marratj/fix-serviceID-regex
