@@ -1,3 +1,14 @@
+Release v0.2.10:
+
+a5ab296 (Justin): Merge pull request #14 from marratj/fix-serviceID-regex
+53f7037 (Marcel Juhnke): updated flux vendor package to 1.6.0
+1c1c129 (Justin): Merge pull request #13 from hiddeco/multi-slack-channel
+b59c93e (Hidde Beydals): Drop JSON config support in favour of comma separated str
+57f3ece (Hidde Beydals): Provide test for SLACK_CHANNEL_PATH option flag
+893b8d6 (Hidde Beydals): Add documentation about SLACK_CHANNEL_PATH option flag
+bfdf692 (Hidde Beydals): Update example manifests to include SLACK_CHANNEL_PATH option flag
+ea93af2 (Hidde Beydals): Add support for sending notifications to multiple Slack channels
+
 Release v0.2.9:
 
 039ea8a (Justin): Merge pull request #12 from simba-sleep/add-formatter-templates
