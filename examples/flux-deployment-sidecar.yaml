@@ -57,7 +57,7 @@ spec:
         - --git-branch=master
         - --connect=ws://127.0.0.1:3031
       - name: fluxcloud
-        image: justinbarrick/fluxcloud:0.1.0
+        image: justinbarrick/fluxcloud:v0.2.11
         imagePullPolicy: Always
         ports:
         - containerPort: 3031

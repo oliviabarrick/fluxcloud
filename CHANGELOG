@@ -1,3 +1,7 @@
+Release v0.2.11:
+
+affbb06 (Justin Barrick): Add .git-semver back.
+
 Release 0.1.0:
 
 ca46711 (Justin Barrick): Update for latest git-semver.
