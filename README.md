@@ -63,6 +63,29 @@ then setting the `WEBHOOK_URL` to the URL to send the webhook to.
 
 Fluxcloud will send a POST request to the provided URL with [the encoded event](https://github.com/justinbarrick/fluxcloud/blob/master/pkg/msg/msg.go) as the payload.
 
+# Formatting commit links
+
+By default, commit links are formatted for Github. It is possible to format them
+for another VCS system, such as Bitbucket, by overriding the commit template.
+
+The commit template is a go template that supports two variables:
+
+* `VCSLink`: which is the GITHUB_URL configuration option.
+* `Commit`: which is the commit id.
+
+The default is:
+
+```
+{{ .VCSLink }}/commit/{{ .Commit }}
+```
+
+For example, to override to work for Bitbucket, set the `COMMIT_TEMPLATE` environment
+variable to:
+
+```
+{{ .VCSLink }}/commits/{{ .Commit }}
+```
+
 # Versioning
 
 Fluxcloud follows semver for versioning, but also publishes development images tagged
