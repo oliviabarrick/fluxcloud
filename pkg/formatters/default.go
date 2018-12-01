@@ -34,14 +34,16 @@ Resource {{ .ID }}, file: {{ .Path }}:
 > {{ .Error }}
 {{ end }}{{ end }}
 `
+	commitTemplate = `{{ .VCSLink }}/commit/{{ .Commit }}`
 )
 
 // The default formatter formats a message for a chat webhook
 type DefaultFormatter struct {
-	config        config.Config
-	vcsLink       string
-	bodyTemplate  string
-	titleTemplate string
+	config         config.Config
+	vcsLink        string
+	bodyTemplate   string
+	titleTemplate  string
+	commitTemplate string
 }
 
 type tplValues struct {
@@ -59,6 +61,11 @@ type tplValues struct {
 	Commits            []fluxevent.Commit
 	Errors             []fluxevent.ResourceError
 	FormatLink         func(string, string) string
+}
+
+type commitTemplateValues struct {
+	VCSLink string
+	Commit  string
 }
 
 var (
@@ -94,6 +101,7 @@ func NewDefaultFormatter(config config.Config) (*DefaultFormatter, error) {
 
 	bodyTemplate := config.Optional("body_template", bodyTemplate)
 	titleTemplate := config.Optional("title_template", titleTemplate)
+	commitTemplate := config.Optional("commit_template", commitTemplate)
 
 	if err := checkTemplate(bodyTemplate); err != nil {
 		log.Println(bodyTemplate)
@@ -105,11 +113,17 @@ func NewDefaultFormatter(config config.Config) (*DefaultFormatter, error) {
 		return nil, err
 	}
 
+	if err := checkTemplate(commitTemplate); err != nil {
+		log.Println(commitTemplate)
+		return nil, err
+	}
+
 	return &DefaultFormatter{
-		config:        config,
-		vcsLink:       vcsLink,
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		config:         config,
+		vcsLink:        vcsLink,
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}, nil
 }
 
@@ -154,7 +168,10 @@ func (d DefaultFormatter) FormatEvent(event fluxevent.Event, exporter exporters.
 
 	commits := getCommits(event.Metadata)
 	if len(commits) > 0 {
-		message.TitleLink = d.vcsLink + "/commit/" + commits[0].Revision
+		message.TitleLink = execTemplate(d.commitTemplate, &commitTemplateValues{
+			VCSLink: d.vcsLink,
+			Commit:  commits[0].Revision,
+		}, nl)
 	}
 
 	return message

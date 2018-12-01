@@ -13,13 +13,40 @@ import (
 func TestNewDefaultFormatter(t *testing.T) {
 	config := config.NewFakeConfig()
 	config.Set("github_url", "https://github.com/")
-	config.Set("body_template", bodyTemplate)
-	config.Set("title_template", titleTemplate)
 
 	formatter, err := NewDefaultFormatter(config)
 	assert.Nil(t, err)
 	assert.Equal(t, bodyTemplate, formatter.bodyTemplate)
 	assert.Equal(t, titleTemplate, formatter.titleTemplate)
+	assert.Equal(t, commitTemplate, formatter.commitTemplate)
+	assert.Equal(t, "https://github.com/", formatter.vcsLink)
+	assert.Equal(t, config, formatter.config)
+}
+
+func TestNewDefaultFormatterCustom(t *testing.T) {
+	config := config.NewFakeConfig()
+	config.Set("github_url", "https://github.com/")
+
+	bodyTemplate := `
+{{ if or (eq .EventType "commit") (eq .EventType "autorelease")}}
+{{ if (gt (len .EventServiceIDs) 0) }}Resources updated:{{ range .EventServiceIDs }}
+* {{ . }}
+{{ end }}{{ end }}
+{{ end }}`
+	titleTemplate := `
+{{ if eq .EventType "commit" }}Applying changes from commit{{ end }}
+{{ if eq .EventType "autorelease" }}Auto releasing resource{{ end }}`
+	commitTemplate := `{{ .VCSLink }}/commits/{{ .Commit }}`
+
+	config.Set("body_template", bodyTemplate)
+	config.Set("title_template", titleTemplate)
+	config.Set("commit_template", commitTemplate)
+
+	formatter, err := NewDefaultFormatter(config)
+	assert.Nil(t, err)
+	assert.Equal(t, bodyTemplate, formatter.bodyTemplate)
+	assert.Equal(t, titleTemplate, formatter.titleTemplate)
+	assert.Equal(t, commitTemplate, formatter.commitTemplate)
 	assert.Equal(t, "https://github.com/", formatter.vcsLink)
 	assert.Equal(t, config, formatter.config)
 }
@@ -37,9 +64,10 @@ func TestDefaultFormatterImplementsFormatter(t *testing.T) {
 
 func TestDefaultFormatterFormatSyncEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink:       "https://github.com",
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}
 
 	event := test_utils.NewFluxSyncEvent()
@@ -61,9 +89,10 @@ Resources updated:
 
 func TestDefaultFormatterFormatCommitEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink:       "https://github.com",
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxCommitEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
@@ -78,7 +107,7 @@ Resources updated:
 
 func TestDefaultFormatterCustomTemplates(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink: "https://github.com",
+		vcsLink: "https://bitbucket.org",
 		bodyTemplate: `
 {{ if or (eq .EventType "commit") (eq .EventType "autorelease")}}
 {{ if (gt (len .EventServiceIDs) 0) }}Resources updated:{{ range .EventServiceIDs }}
@@ -88,17 +117,18 @@ func TestDefaultFormatterCustomTemplates(t *testing.T) {
 		titleTemplate: `
 {{ if eq .EventType "commit" }}Applying changes from commit{{ end }}
 {{ if eq .EventType "autorelease" }}Auto releasing resource{{ end }}`,
+		commitTemplate: `{{ .VCSLink }}/commits/{{ .Commit }}`,
 	}
 
 	msg := d.FormatEvent(test_utils.NewFluxCommitEvent(), &exporters.FakeExporter{})
-	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
+	assert.Equal(t, "https://bitbucket.org/commits/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
 	assert.Equal(t, "Applying changes from commit", msg.Title)
 	assert.Equal(t, fluxevent.EventCommit, msg.Type)
 	assert.Equal(t, `Resources updated:
 * default:deployment/test`, msg.Body)
 
 	msg = d.FormatEvent(test_utils.NewFluxAutoReleaseEvent(), &exporters.FakeExporter{})
-	assert.Equal(t, "https://github.com", msg.TitleLink)
+	assert.Equal(t, "https://bitbucket.org", msg.TitleLink)
 	assert.Equal(t, "Auto releasing resource", msg.Title)
 	assert.Equal(t, fluxevent.EventAutoRelease, msg.Type)
 	assert.Equal(t, `Resources updated:
@@ -113,9 +143,10 @@ func TestDefaultFormatterCustomTemplates(t *testing.T) {
 
 func TestDefaultFormatterFormatAutoReleaseEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink:       "https://github.com",
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxAutoReleaseEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com", msg.TitleLink)
@@ -130,9 +161,10 @@ Resources updated:
 
 func TestDefaultFormatterFormatUpdatePolicyEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink:       "https://github.com",
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}
 	msg := d.FormatEvent(test_utils.NewFluxUpdatePolicyEvent(), &exporters.FakeExporter{})
 	assert.Equal(t, "https://github.com/commit/d644e1a05db6881abf0cdb78299917b95f442036", msg.TitleLink)
@@ -150,9 +182,10 @@ Resources updated:
 
 func TestDefaultFormatterFormatSyncErrorEvent(t *testing.T) {
 	d := DefaultFormatter{
-		vcsLink:       "https://github.com",
-		bodyTemplate:  bodyTemplate,
-		titleTemplate: titleTemplate,
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
 	}
 
 	event := test_utils.NewFluxSyncErrorEvent()
