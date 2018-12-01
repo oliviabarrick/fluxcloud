@@ -9,7 +9,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 3031
+    targetPort: 3032
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -29,7 +29,7 @@ spec:
         image: justinbarrick/fluxcloud:v0.2.11
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3031
+        - containerPort: 3032
         env:
         - name: SLACK_URL
           value: "https://hooks.slack.com/services/WEBHOOK_URL"
@@ -44,3 +44,5 @@ spec:
           value: ":heart:"
         - name: GITHUB_URL
           value: "https://github.com/justinbarrick/fluxcloud/"
+        - name: LISTEN_ADDRESS
+          value: ":3032"

@@ -55,12 +55,12 @@ spec:
         # replace (at least) the following URL
         - --git-url=git@github.com:weaveworks/flux-example
         - --git-branch=master
-        - --connect=ws://127.0.0.1:3031
+        - --connect=ws://127.0.0.1:3032
       - name: fluxcloud
         image: justinbarrick/fluxcloud:v0.2.11
         imagePullPolicy: Always
         ports:
-        - containerPort: 3031
+        - containerPort: 3032
         env:
         # Set these environment variables:
         - name: SLACK_URL
@@ -76,3 +76,5 @@ spec:
           value: ":heart:"
         - name: GITHUB_URL
           value: "https://github.com/justinbarrick/fluxcloud/"
+        - name: LISTEN_ADDRESS
+          value: ":3032"

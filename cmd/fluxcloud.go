@@ -43,5 +43,5 @@ func main() {
 
 	apis.HandleWebsocket(apiConfig)
 	apis.HandleV6(apiConfig)
-	log.Fatal(apiConfig.Listen(":3031"))
+	log.Fatal(apiConfig.Listen(config.Optional("listen_address", ":3031")))
 }
