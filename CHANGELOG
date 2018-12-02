@@ -1,3 +1,15 @@
+Release v0.3.0:
+
+fa98a24 (Justin Barrick): Revert "Release v0.2.14"
+865687e (Justin Barrick): Release v0.2.14
+2bc7cd4 (Justin): Merge pull request #21 from justinbarrick/commit-template
+e9cddd8 (Justin Barrick): Support overriding the commit URL template #15
+72b4524 (Justin): Merge pull request #20 from justinbarrick/flux-1.8.1
+93cfa5f (Justin): Merge branch 'master' into flux-1.8.1
+656d868 (Justin): Merge pull request #19 from justinbarrick/configurable-port
+0a8dfd2 (Justin Barrick): Update to latest flux 1.8.1.
+878d362 (Justin Barrick): Make fluxcloud port configurable to fix #16
+
 Release v0.2.11:
 
 affbb06 (Justin Barrick): Add .git-semver back.
