@@ -1,6 +1,9 @@
 kind: pipeline
 name: default
 
+platform:
+  os: linux
+  arch: amd64
 
 workspace:
   base: /go
