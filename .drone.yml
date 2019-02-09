@@ -1,6 +1,7 @@
 kind: pipeline
 name: default
 
+
 workspace:
   base: /go
   path: src/github.com/justinbarrick/fluxcloud
