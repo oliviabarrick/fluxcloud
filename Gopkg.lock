@@ -10,6 +10,47 @@
   version = "v1.4.2"
 
 [[projects]]
+  digest = "1:6f3605409ce38162d74ce440097b7b0c0a5366711333cef26231a49dc81d0636"
+  name = "github.com/aws/aws-sdk-go"
+  packages = [
+    "aws",
+    "aws/awserr",
+    "aws/awsutil",
+    "aws/client",
+    "aws/client/metadata",
+    "aws/corehandlers",
+    "aws/credentials",
+    "aws/credentials/ec2rolecreds",
+    "aws/credentials/endpointcreds",
+    "aws/credentials/processcreds",
+    "aws/credentials/stscreds",
+    "aws/csm",
+    "aws/defaults",
+    "aws/ec2metadata",
+    "aws/endpoints",
+    "aws/request",
+    "aws/session",
+    "aws/signer/v4",
+    "internal/ini",
+    "internal/sdkio",
+    "internal/sdkrand",
+    "internal/sdkuri",
+    "internal/shareddefaults",
+    "private/protocol",
+    "private/protocol/json/jsonutil",
+    "private/protocol/jsonrpc",
+    "private/protocol/query",
+    "private/protocol/query/queryutil",
+    "private/protocol/rest",
+    "private/protocol/xml/xmlutil",
+    "service/ecr",
+    "service/sts",
+  ]
+  pruneopts = "NUT"
+  revision = "81f3829f5a9d041041bdf56e55926691309d7699"
+  version = "v1.16.26"
+
+[[projects]]
   branch = "master"
   digest = "1:707ebe952a8b3d00b343c01536c79c73771d100f63ec6babeaed5c79e2b8a8dd"
   name = "github.com/beorn7/perks"
@@ -126,6 +167,13 @@
   pruneopts = "NUT"
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:1f2aebae7e7c856562355ec0198d8ca2fa222fb05e5b1b66632a1fce39631885"
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "c2b33e84"
 
 [[projects]]
   branch = "master"
@@ -255,7 +303,7 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:e66e335711de93e776b0243ddc410e736e3bca3a7ae5bbe90f63d6b376d89aec"
+  digest = "1:a4a32f8bb978cf341d488a6c212b27df6b98f3cf05709772791545423f481e2e"
   name = "github.com/weaveworks/flux"
   packages = [
     ".",
@@ -272,8 +320,8 @@
     "update",
   ]
   pruneopts = "NUT"
-  revision = "7b24d23e7ef157c87836de7af4e058da10d35298"
-  version = "1.8.1"
+  revision = "40cd663e74561e14b1dc5a65bf7ed2fff6cf4792"
+  version = "1.9.0"
 
 [[projects]]
   branch = "master"
