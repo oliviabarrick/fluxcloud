@@ -33,7 +33,6 @@ steps:
     when:
       event: push
 
-
   - name: publish
     image: plugins/docker
     environment:
@@ -47,10 +46,7 @@ steps:
         - ${DRONE_TAG}
         - latest
     when:
-      ref:
-        include:
-        - refs/tags/*
-      branch: master
+      event: tag
 
   - name: github_release
     image: plugins/github-release
@@ -63,10 +59,7 @@ steps:
       checksum:
         - sha256
     when:
-      ref:
-        include:
-        - refs/tags/*
-      branch: master
+      event: tag
 
   - name: slack
     image: plugins/slack
@@ -97,7 +90,4 @@ steps:
   
         Pushed <https://hub.docker.com/r/{{repo.owner}}/{{repo.name}}|{{repo.owner}}/{{repo.name}}:${DRONE_TAG}> to Dockerhub.
     when:
-      branch: master
-      ref:
-        include:
-        - refs/tags/*
+      event: tag
