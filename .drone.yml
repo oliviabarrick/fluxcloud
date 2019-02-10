@@ -29,6 +29,7 @@ steps:
     when:
       event: push
 
+
   - name: publish
     image: plugins/docker
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
