@@ -47,7 +47,9 @@ steps:
         - ${DRONE_TAG}
         - latest
     when:
-      event: tag
+      ref:
+        include:
+        - refs/tags/*
       branch: master
 
   - name: github_release
@@ -61,7 +63,9 @@ steps:
       checksum:
         - sha256
     when:
-      event: tag
+      ref:
+        include:
+        - refs/tags/*
       branch: master
 
   - name: slack
@@ -94,4 +98,6 @@ steps:
         Pushed <https://hub.docker.com/r/{{repo.owner}}/{{repo.name}}|{{repo.owner}}/{{repo.name}}:${DRONE_TAG}> to Dockerhub.
     when:
       branch: master
-      event: tag
+      ref:
+        include:
+        - refs/tags/*
