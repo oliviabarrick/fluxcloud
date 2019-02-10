@@ -1,3 +1,13 @@
+Release v0.3.1:
+
+e40e9df (Justin): Merge pull request #24 from justinbarrick/matrix
+6237f11 (Justin Barrick): fix secrets
+a57db6b (Justin Barrick): try new push
+3131bc9 (Justin Barrick): specify amd64 platform?
+0747d1d (Justin Barrick): a change
+d9e0215 (Justin Barrick): drone 1.0
+13fcf60 (Justin Barrick): Implement matrix exporter
+
 Release v0.3.0:
 
 fa98a24 (Justin Barrick): Revert "Release v0.2.14"
