@@ -21,7 +21,11 @@ steps:
 
   - name: publish-dev
     image: plugins/docker
-    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
     settings:
       repo: justinbarrick/fluxcloud
       tags:
@@ -32,7 +36,11 @@ steps:
 
   - name: publish
     image: plugins/docker
-    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
     settings:
       repo: justinbarrick/fluxcloud
       tags:
@@ -44,7 +52,9 @@ steps:
 
   - name: github_release
     image: plugins/github-release
-    secrets: [ github_token ]
+    environment:
+      github_token:
+        from_secret: github_token
     settings:
       files:
         - fluxcloud
