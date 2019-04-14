@@ -22,7 +22,7 @@ func NewAPIConfig(f formatters.Formatter, e exporters.Exporter, c config.Config)
 	return APIConfig{
 		Server: http.NewServeMux(),
 		Client: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout: 120 * time.Second,
 		},
 		Formatter: f,
 		Exporter:  e,
