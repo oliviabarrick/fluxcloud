@@ -303,7 +303,7 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:a4a32f8bb978cf341d488a6c212b27df6b98f3cf05709772791545423f481e2e"
+  digest = "1:3f68b0a5e634243279f38bffab570be422e563fb288f064f6174071c5dff3369"
   name = "github.com/weaveworks/flux"
   packages = [
     ".",
@@ -320,8 +320,8 @@
     "update",
   ]
   pruneopts = "NUT"
-  revision = "40cd663e74561e14b1dc5a65bf7ed2fff6cf4792"
-  version = "1.9.0"
+  revision = "fea56bc3feeedff7231e9647c306148f94d0d10e"
+  version = "1.12.0"
 
 [[projects]]
   branch = "master"

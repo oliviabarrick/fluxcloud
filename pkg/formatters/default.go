@@ -51,7 +51,7 @@ type tplValues struct {
 	EventID            fluxevent.EventID
 	EventServiceIDs    []flux.ResourceID
 	EventChangedImages []string
-	EventResult        map[flux.ResourceID]update.ControllerResult
+	EventResult        update.Result
 	EventType          string
 	EventStartedAt     time.Time
 	EventEndedAt       time.Time
@@ -224,7 +224,7 @@ func getCommits(meta fluxevent.EventMetadata) []fluxevent.Commit {
 	}
 }
 
-func getResult(meta fluxevent.EventMetadata) map[flux.ResourceID]update.ControllerResult {
+func getResult(meta fluxevent.EventMetadata) update.Result {
 	switch v := meta.(type) {
 	case *fluxevent.AutoReleaseEventMetadata:
 		return v.Result
