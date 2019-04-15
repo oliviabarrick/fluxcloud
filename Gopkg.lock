@@ -10,6 +10,14 @@
   version = "v1.4.2"
 
 [[projects]]
+  digest = "1:b39cf81d5f440b9c0757a25058432d33af867e5201109bf53621356d9dab4b73"
+  name = "github.com/apache/thrift"
+  packages = ["lib/go/thrift"]
+  pruneopts = "NUT"
+  revision = "384647d290e2e4a55a14b1b7ef1b7e66293a2c33"
+  version = "v0.12.0"
+
+[[projects]]
   digest = "1:6f3605409ce38162d74ce440097b7b0c0a5366711333cef26231a49dc81d0636"
   name = "github.com/aws/aws-sdk-go"
   packages = [
@@ -169,6 +177,14 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:67474f760e9ac3799f740db2c489e6423a4cde45520673ec123ac831ad849cb8"
+  name = "github.com/hashicorp/golang-lru"
+  packages = ["simplelru"]
+  pruneopts = "NUT"
+  revision = "7087cb70de9f7a8bc0a10c375cb0d2280a8edf9c"
+  version = "v0.5.1"
+
+[[projects]]
   digest = "1:1f2aebae7e7c856562355ec0198d8ca2fa222fb05e5b1b66632a1fce39631885"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
@@ -324,6 +340,33 @@
   version = "1.12.0"
 
 [[projects]]
+  digest = "1:3b0f8f390158305d253efcc941a45488f60334cda729b582aab2badef9d8f131"
+  name = "go.opencensus.io"
+  packages = [
+    ".",
+    "exporter/jaeger",
+    "exporter/jaeger/internal/gen-go/jaeger",
+    "internal",
+    "internal/tagencoding",
+    "metric/metricdata",
+    "metric/metricproducer",
+    "plugin/ochttp",
+    "plugin/ochttp/propagation/b3",
+    "resource",
+    "stats",
+    "stats/internal",
+    "stats/view",
+    "tag",
+    "trace",
+    "trace/internal",
+    "trace/propagation",
+    "trace/tracestate",
+  ]
+  pruneopts = "NUT"
+  revision = "75c0cca22312e51bfd4fafdbe9197ae399e18b38"
+  version = "v0.20.2"
+
+[[projects]]
   branch = "master"
   digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
@@ -338,6 +381,14 @@
   packages = ["context"]
   pruneopts = "NUT"
   revision = "ed29d75add3d7c4bf7ca65aac0c6df3d1420216f"
+
+[[projects]]
+  branch = "master"
+  digest = "1:75515eedc0dc2cb0b40372008b616fa2841d831c63eedd403285ff286c593295"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  pruneopts = "NUT"
+  revision = "56d357773e8497dfd526f0727e187720d1093757"
 
 [[projects]]
   branch = "master"
@@ -358,6 +409,14 @@
   pruneopts = "NUT"
   revision = "fbb02b2291d28baffd63558aa44b4b56f178d650"
 
+[[projects]]
+  branch = "master"
+  digest = "1:5f003878aabe31d7f6b842d4de32b41c46c214bb629bb485387dbcce1edf5643"
+  name = "google.golang.org/api"
+  packages = ["support/bundler"]
+  pruneopts = "NUT"
+  revision = "5f67ac420c718c51337fbe0dbceb4d7615a47ca6"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -367,6 +426,9 @@
     "github.com/weaveworks/flux",
     "github.com/weaveworks/flux/event",
     "github.com/weaveworks/flux/update",
+    "go.opencensus.io/exporter/jaeger",
+    "go.opencensus.io/plugin/ochttp",
+    "go.opencensus.io/trace",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

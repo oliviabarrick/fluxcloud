@@ -1,10 +1,15 @@
 package apis
 
 import (
+	"go.opencensus.io/exporter/jaeger"
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/trace"
+
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/exporters"
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -22,7 +27,8 @@ func NewAPIConfig(f formatters.Formatter, e exporters.Exporter, c config.Config)
 	return APIConfig{
 		Server: http.NewServeMux(),
 		Client: &http.Client{
-			Timeout: 120 * time.Second,
+			Timeout:   120 * time.Second,
+			Transport: &ochttp.Transport{},
 		},
 		Formatter: f,
 		Exporter:  e,
@@ -32,9 +38,25 @@ func NewAPIConfig(f formatters.Formatter, e exporters.Exporter, c config.Config)
 
 // Listen on addr
 func (a *APIConfig) Listen(addr string) error {
+	if os.Getenv("JAEGER_ENDPOINT") != "" {
+		exporter, err := jaeger.NewExporter(jaeger.Options{
+			CollectorEndpoint: os.Getenv("JAEGER_ENDPOINT"),
+			Process: jaeger.Process{
+				ServiceName: "fluxcloud",
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		trace.RegisterExporter(exporter)
+	}
+
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+
 	server := http.Server{
 		Addr:    addr,
-		Handler: a.Server,
+		Handler: &ochttp.Handler{Handler: a.Server, IsPublicEndpoint: false},
 	}
 
 	return server.ListenAndServe()

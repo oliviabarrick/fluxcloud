@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"context"
 	"github.com/justinbarrick/fluxcloud/pkg/msg"
 	"net/http"
 )
@@ -8,7 +9,7 @@ import (
 // An exporter sends a formatted event to an upstream.
 type Exporter interface {
 	// Send a message through the exporter.
-	Send(client *http.Client, message msg.Message) error
+	Send(c context.Context, client *http.Client, message msg.Message) error
 
 	// Return a new line as a string for the exporter.
 	NewLine() string

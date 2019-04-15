@@ -25,6 +25,7 @@ Set the following environment variables in your chosen deployment:
 * `GITHUB_URL`: the URL to the Github repository that Flux uses, used for Slack links.
 * `WEBHOOK_URL`: if the exporter is "webhook", then the URL to use for the webhook.
 * `EXPORTER_TYPE` (optional): The type of exporter to use. (Choices: slack, webhook, Default: slack)
+* `JAEGER_ENDPOINT` (optional): endpoint to report Jaeger traces to.
 
 And then apply the configuration:
 

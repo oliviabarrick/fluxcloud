@@ -2,6 +2,7 @@ package exporters
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -31,7 +32,7 @@ func NewWebhook(config config.Config) (*Webhook, error) {
 }
 
 // Send a WebhookMessage to Webhook
-func (s *Webhook) Send(client *http.Client, message msg.Message) error {
+func (s *Webhook) Send(c context.Context, client *http.Client, message msg.Message) error {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(message)
 	if err != nil {
@@ -40,7 +41,12 @@ func (s *Webhook) Send(client *http.Client, message msg.Message) error {
 	}
 
 	log.Print(string(b.Bytes()))
-	res, err := client.Post(s.Url, "application/json", b)
+
+	req, _ := http.NewRequest("POST", s.Url, b)
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(c)
+
+	res, err := client.Do(req)
 	if err != nil {
 		log.Print("Could not post to Webhook:", err)
 		return err
