@@ -2,6 +2,7 @@ package exporters
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -77,7 +78,7 @@ func (s *Matrix) GetUrl() (string, error) {
 }
 
 // Send a Message to Matrix
-func (s *Matrix) Send(client *http.Client, message msg.Message) error {
+func (s *Matrix) Send(c context.Context, client *http.Client, message msg.Message) error {
 	b := new(bytes.Buffer)
 
 	body := fmt.Sprintf("<a href='%s'>%s</a><br>%s", message.TitleLink, message.Title, message.Body)
@@ -95,7 +96,11 @@ func (s *Matrix) Send(client *http.Client, message msg.Message) error {
 
 	log.Print(string(b.Bytes()))
 
-	res, err := client.Post(s.fullUrl, "application/json", b)
+	req, _ := http.NewRequest("POST", s.fullUrl, b)
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(c)
+
+	res, err := client.Do(req)
 	if err != nil {
 		log.Print("Could not post to matrix:", err)
 		return err

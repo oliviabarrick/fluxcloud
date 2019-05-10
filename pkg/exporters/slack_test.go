@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -146,7 +147,7 @@ func TestSlackSend(t *testing.T) {
 
 	testSlack.Url = ts.URL
 
-	err := testSlack.Send(&http.Client{}, message)
+	err := testSlack.Send(context.TODO(), &http.Client{}, message)
 	assert.Nil(t, err)
 	assert.Contains(t, testSlack.NewSlackMessage(message), slackMessage)
 }
@@ -167,7 +168,7 @@ func TestSlackSendNon200(t *testing.T) {
 
 	testSlack.Url = ts.URL
 
-	err := testSlack.Send(&http.Client{}, message)
+	err := testSlack.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
@@ -189,7 +190,7 @@ func TestSlackSendHTTPError(t *testing.T) {
 
 	testSlack.Url = ts.URL
 
-	err := testSlack.Send(&http.Client{}, message)
+	err := testSlack.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 

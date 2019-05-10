@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/justinbarrick/fluxcloud/pkg/config"
@@ -57,7 +58,7 @@ func TestWebhookSend(t *testing.T) {
 
 	webhook.Url = ts.URL
 
-	err := webhook.Send(&http.Client{}, message)
+	err := webhook.Send(context.TODO(), &http.Client{}, message)
 	assert.Nil(t, err)
 	assert.Equal(t, receivedMessage, message)
 }
@@ -73,7 +74,7 @@ func TestWebhookSendNon200(t *testing.T) {
 
 	webhook.Url = ts.URL
 
-	err := webhook.Send(&http.Client{}, message)
+	err := webhook.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
@@ -89,7 +90,7 @@ func TestWebhookSendHTTPError(t *testing.T) {
 
 	webhook.Url = ts.URL
 
-	err := webhook.Send(&http.Client{}, message)
+	err := webhook.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 

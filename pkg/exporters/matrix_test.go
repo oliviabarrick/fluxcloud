@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/justinbarrick/fluxcloud/pkg/config"
@@ -97,7 +98,7 @@ func TestMatrixSend(t *testing.T) {
 	matrix.accessToken = "myaccesstoken"
 	matrix.fullUrl, _ = matrix.GetUrl()
 
-	err := matrix.Send(&http.Client{}, message)
+	err := matrix.Send(context.TODO(), &http.Client{}, message)
 	assert.Nil(t, err)
 	assert.Equal(t, receivedMessage, MatrixMessage{
 		MsgType:       "m.text",
@@ -121,7 +122,7 @@ func TestMatrixSendNon200(t *testing.T) {
 	matrix.accessToken = "myaccesstoken"
 	matrix.fullUrl, _ = matrix.GetUrl()
 
-	err := matrix.Send(&http.Client{}, message)
+	err := matrix.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
@@ -140,7 +141,7 @@ func TestMatrixSendHTTPError(t *testing.T) {
 	matrix.accessToken = "myaccesstoken"
 	matrix.fullUrl, _ = matrix.GetUrl()
 
-	err := matrix.Send(&http.Client{}, message)
+	err := matrix.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
