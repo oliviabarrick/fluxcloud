@@ -22,9 +22,10 @@ Set the following environment variables in your chosen deployment:
 * `SLACK_USERNAME`: the Slack username to use when sending messages.
 * `SLACK_CHANNEL`: the Slack channel to send messages to.
 * `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
+* `MSTEAMS_URL`: the Microsoft Teams [webhook URL](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors#sending-actionable-messages-via-office-365-connectors) to use
 * `GITHUB_URL`: the URL to the Github repository that Flux uses, used for Slack links.
 * `WEBHOOK_URL`: if the exporter is "webhook", then the URL to use for the webhook.
-* `EXPORTER_TYPE` (optional): The type of exporter to use. (Choices: slack, webhook, Default: slack)
+* `EXPORTER_TYPE` (optional): The type of exporter to use. (Choices: slack, msteams, webhook, Default: slack)
 
 And then apply the configuration:
 
@@ -55,6 +56,11 @@ the created and/or updated resources. This is done by setting a comma separated
 If you for example want to send notifications of all events to `#k8s-events` but only
 events from namespace `team-b` to `#teamb` you would set the following string:
 `SLACK_CHANNEL=#k8s-events=*,#team-b=team-b`.
+
+## Microsoft Teams
+
+Set the environment variable `MSTEAMS_URL` to the URL generated on activation of an
+Incoming Webhook in a Microsoft Teams channel.
 
 ## Webhooks
 

@@ -19,6 +19,8 @@ func initExporter(config config.Config) (exporter exporters.Exporter) {
 		exporter, err = exporters.NewWebhook(config)
 	case "matrix":
 		exporter, err = exporters.NewMatrix(config)
+	case "msteams":
+		exporter, err = exporters.NewMSTeams(config)
 	default:
 		exporter, err = exporters.NewSlack(config)
 	}
