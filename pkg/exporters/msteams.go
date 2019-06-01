@@ -2,6 +2,7 @@ package exporters
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -53,7 +54,7 @@ func NewMSTeams(config config.Config) (*MSTeams, error) {
 }
 
 // Send a MSTeamsMessage to MS Teams
-func (s *MSTeams) Send(client *http.Client, message msg.Message) error {
+func (s *MSTeams) Send(ctx context.Context, client *http.Client, message msg.Message) error {
 	msTeamsMessage := s.NewMSTeamsMessage(message)
 	fmt.Println(msTeamsMessage)
 	b := new(bytes.Buffer)
@@ -63,8 +64,11 @@ func (s *MSTeams) Send(client *http.Client, message msg.Message) error {
 		return err
 	}
 
+	req, _ := http.NewRequest("POST", s.Url, b)
+	req.Header.Set("Content-Type", "application/json")
+	req = req.WithContext(ctx)
 	log.Print(string(b.Bytes()))
-	res, err := client.Post(s.Url, "application/json", b)
+	res, err := client.Do(req)
 	if err != nil {
 		log.Print("Could not post to MS Teams:", err)
 		return err

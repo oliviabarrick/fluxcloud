@@ -1,6 +1,7 @@
 package exporters
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/justinbarrick/fluxcloud/pkg/config"
@@ -74,7 +75,7 @@ func TestMSTeamsSend(t *testing.T) {
 
 	msteams.Url = ts.URL
 
-	err := msteams.Send(&http.Client{}, message)
+	err := msteams.Send(context.TODO(), &http.Client{}, message)
 	assert.Nil(t, err)
 	assert.Equal(t, msteams.NewMSTeamsMessage(message), msteamsMsg)
 }
@@ -90,7 +91,7 @@ func TestMSTeamsSendNon200(t *testing.T) {
 
 	msteams.Url = ts.URL
 
-	err := msteams.Send(&http.Client{}, message)
+	err := msteams.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
@@ -106,7 +107,7 @@ func TestMSTeamsSendHTTPError(t *testing.T) {
 
 	msteams.Url = ts.URL
 
-	err := msteams.Send(&http.Client{}, message)
+	err := msteams.Send(context.TODO(), &http.Client{}, message)
 	assert.NotNil(t, err)
 }
 
