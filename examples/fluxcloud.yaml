@@ -38,6 +38,12 @@ spec:
         # Or configure multiple channels
         # (comma separated <channel>=<namespace>) string:
         #  value: "#kubernetes=*,#team=team"
+        # Optional: legacy Slack API token
+        # - name: SLACK_TOKEN
+        #   valueFrom:
+        #     secretKeyRef:
+        #       key: token
+        #       name: slack-token
         - name: SLACK_USERNAME
           value: Flux Deployer
         - name: SLACK_ICON_EMOJI

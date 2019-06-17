@@ -45,6 +45,7 @@ func TestSlackOverrides(t *testing.T) {
 	config.Set("slack_channel", "#mychannel=namespace")
 	config.Set("slack_username", "my user")
 	config.Set("slack_icon_emoji", ":weave:")
+	config.Set("slack_token", "mytoken")
 
 	slack, err := NewSlack(config)
 	assert.Nil(t, err)
@@ -53,6 +54,7 @@ func TestSlackOverrides(t *testing.T) {
 	assert.Equal(t, []SlackChannel{SlackChannel{"#mychannel", "namespace"}}, slack.Channels)
 	assert.Equal(t, "my user", slack.Username)
 	assert.Equal(t, ":weave:", slack.IconEmoji)
+	assert.Equal(t, "mytoken", slack.Token)
 }
 
 func TestSlackChannel(t *testing.T) {
@@ -202,4 +204,33 @@ func TestSlackName(t *testing.T) {
 
 func TestSlackImplementsExporter(t *testing.T) {
 	_ = Exporter(&Slack{})
+}
+
+func TestSlackSendAuthToken(t *testing.T) {
+	resourceID, _ := flux.ParseResourceID("namespace:resource/name")
+	message := msg.Message{
+		TitleLink: "https://myvcslink/",
+		Title:     "The title of the message",
+		Body:      "this is the message body",
+		Event: fluxevent.Event{
+			ServiceIDs: []flux.ResourceID{
+				resourceID,
+			},
+		},
+	}
+
+	authHeader := ""
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader = r.Header.Get("Authorization")
+		fmt.Fprintln(w, "Hello, client")
+	}))
+	defer ts.Close()
+
+	testSlack.Url = ts.URL
+	testSlack.Token = "mytoken"
+
+	err := testSlack.Send(context.TODO(), &http.Client{}, message)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Bearer %s", testSlack.Token), authHeader)
 }

@@ -20,6 +20,7 @@ Set the following environment variables in your chosen deployment:
 
 * `SLACK_URL`: the Slack [webhook URL](https://api.slack.com/incoming-webhooks) to use.
 * `SLACK_USERNAME`: the Slack username to use when sending messages.
+* `SLACK_TOKEN` (optional): legacy Slack API token to use.
 * `SLACK_CHANNEL`: the Slack channel to send messages to.
 * `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
 * `MSTEAMS_URL`: the Microsoft Teams [webhook URL](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors#sending-actionable-messages-via-office-365-connectors) to use

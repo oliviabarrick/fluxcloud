@@ -18,6 +18,7 @@ import (
 type Slack struct {
 	Url       string
 	Username  string
+	Token     string
 	Channels  []SlackChannel
 	IconEmoji string
 }
@@ -61,6 +62,7 @@ func NewSlack(config config.Config) (*Slack, error) {
 	s.parseSlackChannelConfig(channels)
 	log.Println(s.Channels)
 
+	s.Token = config.Optional("slack_token", "")
 	s.Username = config.Optional("slack_username", "Flux Deployer")
 	s.IconEmoji = config.Optional("slack_icon_emoji", ":star-struck:")
 
@@ -82,6 +84,11 @@ func (s *Slack) Send(c context.Context, client *http.Client, message msg.Message
 
 		req, _ := http.NewRequest("POST", s.Url, b)
 		req.Header.Set("Content-Type", "application/json")
+
+		if s.Token != "" {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.Token))
+		}
+
 		req = req.WithContext(c)
 
 		res, err := client.Do(req)
