@@ -11,12 +11,15 @@ spec:
     port: 80
     targetPort: 3032
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fluxcloud
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: fluxcloud
   strategy:
     type: Recreate
   template:
