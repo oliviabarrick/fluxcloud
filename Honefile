@@ -1,9 +1,8 @@
 secrets = [
-    "DOCKER_USER",
-    "DOCKER_PASS",
+    "DOCKER_USER=justinbarrick",
+    "DOCKER_PASS=",
     "S3_BUCKET=codesink-cache",
     "S3_ENDPOINT=sfo2.digitaloceanspaces.com",
-    "S3_ENABLED=true",
     "S3_ACCESS_KEY=",
     "S3_SECRET_KEY=",
     "GITHUB_TOKEN="
@@ -12,6 +11,7 @@ secrets = [
 env = [
     "VAULT_ADDR=https://vault.codesink.io/",
     "VAULT_TOKEN",
+    "S3_ENABLED=false",
     "ENGINE=docker"
 ]
 
@@ -32,7 +32,7 @@ cache {
         secret_key = "${secrets.S3_SECRET_KEY}"
         endpoint = "${secrets.S3_ENDPOINT}"
         bucket = "${secrets.S3_BUCKET}"
-        disabled = "${secrets.S3_ENABLED != "true"}"
+        disabled = "${env.S3_ENABLED != "true"}"
     }
 }
 
@@ -64,7 +64,16 @@ template "docker" {
     }
 
     inputs = ["Dockerfile", "./fluxcloud"]
-    shell = "kaniko --dockerfile=Dockerfile --context=/build/ --destination=${secrets.DOCKER_USER}/fluxcloud:$TAG"
+    shell = <<EOF
+#!/bin/sh
+set +x
+
+if [ "$DOCKER_PASS" == "" ]; then
+    ARGS="--no-push"
+fi
+
+kaniko --dockerfile=Dockerfile --context=/build/ --destination=${secrets.DOCKER_USER}/fluxcloud:$TAG $ARGS
+EOF
 }
 
 job "lint" {
