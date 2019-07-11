@@ -116,3 +116,17 @@ And then you can automate it:
 ```
 fluxctl automate -c kube-system:deployment/fluxcloud
 ```
+
+# Build
+
+To build fluxcloud, you can either use go:
+
+```
+go build -o fluxcloud ./cmd/
+```
+
+Or, to run a full CI build, download [hone](https://github.com/justinbarrick/hone):
+
+```
+hone
+```
