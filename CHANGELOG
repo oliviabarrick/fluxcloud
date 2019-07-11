@@ -1,3 +1,20 @@
+Release v0.3.7:
+
+d8881c8 (Justin): Merge pull request #34 from davidkarlsen/master
+cc2e485 (David J. M. Karlsen): avoid running as root
+302fddd (Justin): Merge pull request #33 from willholley/appsv1
+7a0f863 (Will Holley): Update Kube example manifests to apps/v1
+17d5c1d (Justin): Merge pull request #31 from willholley/go_module
+a5dd438 (Will Holley): remove Gopkg files
+27d710f (Justin): Merge pull request #32 from willholley/slack_token
+b45ae23 (Will Holley): Add Slack token support
+34fc47f (Will Holley): convert to Go module
+afdccaa (Justin Barrick): Fix microsoft teams exporter interface implementation.
+d9f2ed8 (Justin): Merge pull request #28 from demikl/ms_teams_exporter
+4982dff (Mickaël Le Baillif): Merge branch 'master' into ms_teams_exporter
+eb89986 (Mickaël Le Baillif): Implement Microsoft Teams exporter
+008a6bf (Justin Barrick): tracing with opencensus
+
 Release v0.3.6:
 
 421cfa2 (Justin Barrick): increase timeout for slack notifications.
