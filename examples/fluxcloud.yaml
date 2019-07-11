@@ -31,7 +31,7 @@ spec:
         runAsUser: 999
       containers:
       - name: fluxcloud
-        image: justinbarrick/fluxcloud:v0.3.7
+        image: justinbarrick/fluxcloud:v0.3.8
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3032

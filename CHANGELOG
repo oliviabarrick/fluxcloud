@@ -1,3 +1,10 @@
+Release v0.3.8:
+
+2f48c0c (Justin): Merge pull request #39 from justinbarrick/ci
+8fcc974 (Justin Barrick): enable local development
+9f6ea62 (Justin Barrick): add owners file
+453ec63 (Justin Barrick): Switch to Hone, drop vendor directory.
+
 Release v0.3.7:
 
 d8881c8 (Justin): Merge pull request #34 from davidkarlsen/master

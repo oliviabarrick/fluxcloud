@@ -63,7 +63,7 @@ spec:
         - --listen-metrics=:3031
         - --connect=ws://127.0.0.1:3032
       - name: fluxcloud
-        image: justinbarrick/fluxcloud:v0.3.7
+        image: justinbarrick/fluxcloud:v0.3.8
         imagePullPolicy: Always
         ports:
         - containerPort: 3032
