@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/justinbarrick/fluxcloud/pkg/apis"
 	"github.com/justinbarrick/fluxcloud/pkg/config"
@@ -9,27 +10,49 @@ import (
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
 )
 
-func initExporter(config config.Config) (exporter exporters.Exporter) {
+func initExporter(config config.Config) (exporter []exporters.Exporter) {
 	exporterType := config.Optional("Exporter_type", "slack")
 
-	var err error
+	exporterTypes := strings.Split(exporterType, ",")
 
-	switch exporterType {
-	case "webhook":
-		exporter, err = exporters.NewWebhook(config)
-	case "matrix":
-		exporter, err = exporters.NewMatrix(config)
-	case "msteams":
-		exporter, err = exporters.NewMSTeams(config)
-	default:
-		exporter, err = exporters.NewSlack(config)
+	for _, v := range exporterTypes {
+		if v == "webhook" {
+			webhook, err := exporters.NewWebhook(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, webhook)
+		}
+
+		if v == "matrix" {
+			matrix, err := exporters.NewMatrix(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, matrix)
+		}
+
+		if v == "msteams" {
+			msteams, err := exporters.NewMSTeams(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, msteams)
+		}
+
+		if v == "slack" {
+			slack, err := exporters.NewSlack(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, slack)
+		}
 	}
 
-	if err != nil {
-		log.Fatal(err)
+	for _, e := range exporter {
+		log.Printf("Using %s exporter", e.Name())
 	}
 
-	log.Printf("Using %s exporter", exporter.Name())
 	return exporter
 }
 

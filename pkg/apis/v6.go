@@ -24,17 +24,19 @@ func HandleV6(config APIConfig) error {
 			return
 		}
 
-		message := config.Formatter.FormatEvent(event, config.Exporter)
-		if message.Title == "" {
-			w.WriteHeader(200)
-			return
-		}
+		for _, exporter := range config.Exporter {
+			message := config.Formatter.FormatEvent(event, exporter)
+			if message.Title == "" {
+				w.WriteHeader(200)
+				return
+			}
 
-		err = config.Exporter.Send(r.Context(), config.Client, message)
-		if err != nil {
-			log.Print(err.Error())
-			http.Error(w, err.Error(), 500)
-			return
+			err = exporter.Send(r.Context(), config.Client, message)
+			if err != nil {
+				log.Print(err.Error())
+				http.Error(w, err.Error(), 500)
+				return
+			}
 		}
 		w.WriteHeader(200)
 	})
