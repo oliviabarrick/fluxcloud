@@ -24,6 +24,7 @@ func HandleV6(config APIConfig) (err error) {
 			return
 		}
 
+		var sendError bool
 		for _, exporter := range config.Exporter {
 			message := config.Formatter.FormatEvent(event, exporter)
 			if message.Title == "" {
@@ -34,11 +35,13 @@ func HandleV6(config APIConfig) (err error) {
 			err = exporter.Send(r.Context(), config.Client, message)
 			if err != nil {
 				log.Printf("Exporter %v got an error: %v", exporter.Name(), err.Error())
+				sendError = true
 				continue
 			}
 		}
 		// catching error after all the exporters have ran
-		if err != nil {
+		// if any exporter failed we will return 500 on the /v6/events endpoint
+		if sendError {
 			http.Error(w, err.Error(), 500)
 			return
 		}
