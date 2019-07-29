@@ -10,7 +10,7 @@ import (
 )
 
 // Handle Flux events
-func HandleV6(config APIConfig) error {
+func HandleV6(config APIConfig) (err error) {
 	config.Server.HandleFunc("/v6/events", func(w http.ResponseWriter, r *http.Request) {
 		log.Print("Request for:", r.URL)
 
@@ -33,10 +33,14 @@ func HandleV6(config APIConfig) error {
 
 			err = exporter.Send(r.Context(), config.Client, message)
 			if err != nil {
-				log.Print(err.Error())
-				http.Error(w, err.Error(), 500)
-				return
+				log.Printf("Exporter %v got an error: %v", exporter.Name(), err.Error())
+				continue
 			}
+		}
+		// catching error after all the exporters have ran
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
 		}
 		w.WriteHeader(200)
 	})
