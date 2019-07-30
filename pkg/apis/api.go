@@ -1,13 +1,12 @@
 package apis
 
 import (
-	"go.opencensus.io/exporter/jaeger"
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/trace"
-
 	"github.com/justinbarrick/fluxcloud/pkg/config"
 	"github.com/justinbarrick/fluxcloud/pkg/exporters"
 	"github.com/justinbarrick/fluxcloud/pkg/formatters"
+	"go.opencensus.io/exporter/jaeger"
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/trace"
 	"net/http"
 	"os"
 	"time"
@@ -17,13 +16,13 @@ import (
 type APIConfig struct {
 	Server    *http.ServeMux
 	Client    *http.Client
-	Exporter  exporters.Exporter
+	Exporter  []exporters.Exporter
 	Formatter formatters.Formatter
 	Config    config.Config
 }
 
 // Initialize API configuration
-func NewAPIConfig(f formatters.Formatter, e exporters.Exporter, c config.Config) APIConfig {
+func NewAPIConfig(f formatters.Formatter, e []exporters.Exporter, c config.Config) APIConfig {
 	return APIConfig{
 		Server: http.NewServeMux(),
 		Client: &http.Client{
@@ -54,7 +53,7 @@ func (a *APIConfig) Listen(addr string) error {
 
 	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
-	server := http.Server{
+	server := &http.Server{
 		Addr:    addr,
 		Handler: &ochttp.Handler{Handler: a.Server, IsPublicEndpoint: false},
 	}
