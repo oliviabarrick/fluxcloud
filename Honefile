@@ -56,7 +56,7 @@ template "default" {
 template "docker" {
     deps = ["build"]
 
-    image = "justinbarrick/kaniko@sha256:0ad4f7d68af728f4482ba7b12b013036f73370347c9989844319b22e2f5114d7"
+    image = "justinbarrick/kaniko@sha256:c0e44b97f6221c43f571f7a9c57297f641027ff37f62e0d781a9fac80e080e6c"
 
     env = {
         "DOCKER_USER" = "${secrets.DOCKER_USER}",

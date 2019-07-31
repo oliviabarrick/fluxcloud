@@ -22,7 +22,7 @@ func TestHandleV6(t *testing.T) {
 
 	apiConfig := APIConfig{
 		Server:    http.NewServeMux(),
-		Exporter:  fakeExporter,
+		Exporter:  []exporters.Exporter{fakeExporter},
 		Formatter: formatter,
 	}
 
