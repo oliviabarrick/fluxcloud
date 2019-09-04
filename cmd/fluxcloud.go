@@ -11,7 +11,7 @@ import (
 )
 
 func initExporter(config config.Config) (exporter []exporters.Exporter) {
-	exporterType := config.Optional("Exporter_type", "slack")
+	exporterType := config.Optional("exporter_type", "slack")
 
 	exporterTypes := strings.Split(exporterType, ",")
 
