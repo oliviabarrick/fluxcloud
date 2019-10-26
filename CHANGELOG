@@ -1,3 +1,12 @@
+Release v0.3.9:
+
+c26d365 (Jon Arild Torresdal): Fixed casing error on 'exporter_type' preventing setting any other than 'slack' (#45)
+a6757bd (Justin): Merge pull request #42 from latchmihay/multi_exporters
+7720594 (Latch M): - If any exporter.Send() fails the `/v6/events` endpoint will return 500 after it tries all exporters
+47523f4 (Latch M): updating v6 api, to catch errors at the end
+0245b5b (Justin Barrick): update kaniko image
+7328a6d (Latch M): - adding multiple export_type support   - Updating README specifying how to set multiple exporter types - adding an integration test that runs slack exporter and a webhook exporter
+
 Release v0.3.8:
 
 2f48c0c (Justin): Merge pull request #39 from justinbarrick/ci
