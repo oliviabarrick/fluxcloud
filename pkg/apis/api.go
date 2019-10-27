@@ -54,8 +54,10 @@ func (a *APIConfig) Listen(addr string) error {
 	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
 	server := &http.Server{
-		Addr:    addr,
-		Handler: &ochttp.Handler{Handler: a.Server, IsPublicEndpoint: false},
+		Addr:         addr,
+		Handler:      &ochttp.Handler{Handler: a.Server, IsPublicEndpoint: false},
+		ReadTimeout:  120 * time.Second,
+		WriteTimeout: 120 * time.Second,
 	}
 
 	return server.ListenAndServe()
