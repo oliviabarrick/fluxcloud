@@ -33,10 +33,11 @@ type SlackMessage struct {
 
 // Represents a section of a slack message that is sent to the API
 type SlackAttachment struct {
-	Color     string `json:"color"`
-	Title     string `json:"title"`
-	TitleLink string `json:"title_link"`
-	Text      string `json:"text"`
+	Color      string   `json:"color"`
+	Title      string   `json:"title"`
+	TitleLink  string   `json:"title_link"`
+	Text       string   `json:"text"`
+	MarkdownIn []string `json:"mrkdwn_in"`
 }
 
 // Represents a slack channel and the Kubernetes namespace linked to it
@@ -127,10 +128,11 @@ func (s *Slack) NewSlackMessage(message msg.Message) []SlackMessage {
 			Username:  s.Username,
 			Attachments: []SlackAttachment{
 				SlackAttachment{
-					Color:     "#4286f4",
-					TitleLink: message.TitleLink,
-					Title:     message.Title,
-					Text:      message.Body,
+					Color:      "#4286f4",
+					TitleLink:  message.TitleLink,
+					Title:      message.Title,
+					Text:       message.Body,
+					MarkdownIn: []string{"text"},
 				},
 			},
 		}
