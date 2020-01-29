@@ -24,6 +24,11 @@ func HandleV6(config APIConfig) (err error) {
 			return
 		}
 
+		if config.Config.Optional("ONLY_SEND_ERRORS", "0") == "1" && !utils.IsErrorEvent(event) {
+			w.WriteHeader(200)
+			return
+		}
+
 		var sendError bool
 		for _, exporter := range config.Exporter {
 			message := config.Formatter.FormatEvent(event, exporter)

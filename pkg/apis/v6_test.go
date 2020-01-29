@@ -24,6 +24,7 @@ func TestHandleV6(t *testing.T) {
 		Server:    http.NewServeMux(),
 		Exporter:  []exporters.Exporter{fakeExporter},
 		Formatter: formatter,
+		Config:    config,
 	}
 
 	HandleV6(apiConfig)

@@ -28,6 +28,7 @@ Set the following environment variables in your chosen deployment:
 * `WEBHOOK_URL`: if the exporter is "webhook", then the URL to use for the webhook.
 * `EXPORTER_TYPE` (optional): The types of exporter to use in comma delimited form. (Ex: `slack,webhook`) (Choices: slack, msteams, webhook, Default: slack)
 * `JAEGER_ENDPOINT` (optional): endpoint to report Jaeger traces to.
+* `ONLY_SEND_ERRORS` (optional): if set to "1", only events indicating an error will be sent.
 
 And then apply the configuration:
 
