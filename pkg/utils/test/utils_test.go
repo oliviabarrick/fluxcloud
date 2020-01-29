@@ -1,6 +1,7 @@
 package test_utils
 
 import (
+	"github.com/justinbarrick/fluxcloud/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	fluxevent "github.com/weaveworks/flux/event"
 	"testing"
@@ -54,4 +55,12 @@ func TestParseFluxEventSyncError(t *testing.T) {
 	assert.Equal(t, "create invalid resource", commit.Message)
 	assert.Equal(t, true, metadata.Includes["other"])
 	assert.Equal(t, "running kubectl: The PersistentVolumeClaim \"test\" is invalid: spec: Forbidden: field is immutable after creation", metadata.Errors[0].Error)
+}
+
+func TestIsErrorEvent(t *testing.T) {
+	assert.Equal(t, utils.IsErrorEvent(NewFluxSyncEvent()), false)
+	assert.Equal(t, utils.IsErrorEvent(NewFluxSyncErrorEvent()), true)
+	assert.Equal(t, utils.IsErrorEvent(NewFluxCommitEvent()), false)
+	assert.Equal(t, utils.IsErrorEvent(NewFluxAutoReleaseEvent()), false)
+	assert.Equal(t, utils.IsErrorEvent(NewFluxUpdatePolicyEvent()), false)
 }
