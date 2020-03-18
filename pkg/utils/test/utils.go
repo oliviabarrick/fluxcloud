@@ -175,3 +175,26 @@ func NewFluxUpdatePolicyEvent() fluxevent.Event {
 }`))
 	return event
 }
+
+func NewFluxDeleteEvent() fluxevent.Event {
+	event, _ := utils.ParseFluxEvent(bytes.NewBufferString(`{
+  "id":0,
+  "serviceIDs":[],
+  "type":"sync",
+  "startedAt":"2020-03-17T18:56:29.941174734Z",
+  "endedAt":"2020-03-17T18:56:29.941174734Z",
+  "logLevel":"info",
+  "metadata":{
+	"commits":[
+	  {
+		"revision":"c6b7c44b4300f92b788bbc9bb6cb7282852300b4",
+		"message":"deleted k8s-global-objects"
+	  }
+	],
+	"includes":{
+	  "other":true
+	}
+  }
+}`))
+	return event
+}

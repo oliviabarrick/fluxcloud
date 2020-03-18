@@ -23,6 +23,23 @@ func TestParseFluxEventSync(t *testing.T) {
 	assert.Equal(t, true, metadata.Includes["other"])
 }
 
+func TestParseFluxEventDeleteSync(t *testing.T) {
+	event := NewFluxDeleteEvent()
+
+	assert.Equal(t, fluxevent.EventSync, event.Type)
+
+	assert.Equal(t, fluxevent.EventID(0), event.ID)
+	assert.Len(t, event.ServiceIDs, 0)
+	assert.Equal(t, "info", event.LogLevel)
+
+	metadata := event.Metadata.(*fluxevent.SyncEventMetadata)
+	commit := metadata.Commits[0]
+
+	assert.Equal(t, "c6b7c44b4300f92b788bbc9bb6cb7282852300b4", commit.Revision)
+	assert.Equal(t, "deleted k8s-global-objects", commit.Message)
+	assert.Equal(t, true, metadata.Includes["other"])
+}
+
 func TestParseFluxEventCommit(t *testing.T) {
 	event := NewFluxCommitEvent()
 

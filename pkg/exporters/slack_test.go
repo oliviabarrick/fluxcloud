@@ -126,6 +126,29 @@ func TestNewSlackMessage(t *testing.T) {
 	assert.Equal(t, message.Title, attach.Title)
 }
 
+func TestNewSlackMessageNoIDs(t *testing.T) {
+	message := msg.Message{
+		TitleLink: "https://myvcslink/",
+		Title:     "The title of the message",
+		Body:      "this is the message body",
+		Event: fluxevent.Event{
+			ServiceIDs: []flux.ResourceID{},
+		},
+	}
+
+	slackMessages := testSlack.NewSlackMessage(message)
+	assert.Len(t, slackMessages, 1)
+
+	assert.Equal(t, "#channel", slackMessages[0].Channel)
+	assert.Equal(t, testSlack.IconEmoji, slackMessages[0].IconEmoji)
+	assert.Equal(t, testSlack.Username, slackMessages[0].Username)
+
+	attach := slackMessages[0].Attachments[0]
+	assert.Equal(t, "#4286f4", attach.Color)
+	assert.Equal(t, message.TitleLink, attach.TitleLink)
+	assert.Equal(t, message.Title, attach.Title)
+}
+
 func TestSlackSend(t *testing.T) {
 	resourceID, _ := flux.ParseResourceID("namespace:resource/name")
 	message := msg.Message{

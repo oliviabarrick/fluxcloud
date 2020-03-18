@@ -119,7 +119,6 @@ func (s *Slack) FormatLink(link string, name string) string {
 // Convert a flux event into a Slack message(s)
 func (s *Slack) NewSlackMessage(message msg.Message) []SlackMessage {
 	var messages []SlackMessage
-
 	for _, channel := range s.determineChannels(message) {
 		slackMessage := SlackMessage{
 			Channel:   channel,
@@ -171,6 +170,16 @@ func (s *Slack) parseSlackChannelConfig(channels string) error {
 // Match namespaces from service IDs to Slack channels.
 func (s *Slack) determineChannels(message msg.Message) []string {
 	var channels []string
+	// When flux delete objects there are no ServiceIDs
+	if len(message.Event.ServiceIDs) == 0 {
+		for _, ch := range s.Channels {
+			if ch.Namespace == "*" {
+				channels = appendIfMissing(channels, ch.Channel)
+			}
+		}
+		return channels
+	}
+
 	for _, serviceID := range message.Event.ServiceIDs {
 		ns, _, _ := serviceID.Components()
 

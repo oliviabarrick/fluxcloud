@@ -87,6 +87,26 @@ Resources updated:
 	assert.Equal(t, event, msg.Event)
 }
 
+func TestDefaultFormatterFormatDeleteSyncEvent(t *testing.T) {
+	d := DefaultFormatter{
+		vcsLink:        "https://github.com",
+		bodyTemplate:   bodyTemplate,
+		titleTemplate:  titleTemplate,
+		commitTemplate: commitTemplate,
+	}
+
+	event := test_utils.NewFluxDeleteEvent()
+	msg := d.FormatEvent(event, &exporters.FakeExporter{})
+	assert.Equal(t, "https://github.com/commit/c6b7c44b4300f92b788bbc9bb6cb7282852300b4", msg.TitleLink)
+	assert.Equal(t, "Applied flux changes to cluster", msg.Title)
+	assert.Equal(t, fluxevent.EventSync, msg.Type)
+	assert.Equal(t, `Event: Sync: c6b7c44, no workloads changed
+Commits:
+
+* <https://github.com/commit/c6b7c44b4300f92b788bbc9bb6cb7282852300b4|c6b7c44>: deleted k8s-global-objects`, msg.Body)
+	assert.Equal(t, event, msg.Event)
+}
+
 func TestDefaultFormatterFormatCommitEvent(t *testing.T) {
 	d := DefaultFormatter{
 		vcsLink:        "https://github.com",
