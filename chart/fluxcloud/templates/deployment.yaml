@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fluxcloud.fullname" . }}
+  labels:
+    {{- include "fluxcloud.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "fluxcloud.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fluxcloud.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SLACK_URL
+              value: {{ .Values.fluxcloud.slackUrl | quote }}
+            - name: SLACK_CHANNEL
+              value: {{ .Values.fluxcloud.slackChannel | quote }}
+              # Or configure multiple channels
+              # (comma separated <channel>=<namespace>) string:
+              #  value: "#kubernetes=*,#team=team"
+              # Optional: legacy Slack API token
+              # - name: SLACK_TOKEN
+              #   valueFrom:
+              #     secretKeyRef:
+              #       key: token
+              #       name: slack-token
+            - name: SLACK_USERNAME
+              value: {{ .Values.fluxcloud.slackUsername | quote }}
+            - name: SLACK_ICON_EMOJI
+              value: {{ .Values.fluxcloud.slackIconEmoji | quote }}
+            - name: GITHUB_URL
+              value: {{ .Values.fluxcloud.githubUrl | quote }}
+            - name: LISTEN_ADDRESS
+              value: ":{{ .Values.fluxcloud.listenPort }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.fluxcloud.listenPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.fluxcloud.listenPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.fluxcloud.listenPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
