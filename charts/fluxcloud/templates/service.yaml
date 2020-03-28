@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "fluxcloud.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.fluxcloud.listenPort }}
       targetPort: {{ .Values.fluxcloud.listenPort }}
       protocol: TCP
       name: http
