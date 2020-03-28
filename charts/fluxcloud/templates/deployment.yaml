@@ -52,14 +52,6 @@ spec:
             - name: http
               containerPort: {{ .Values.fluxcloud.listenPort }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.fluxcloud.listenPort }}
-          readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.fluxcloud.listenPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
