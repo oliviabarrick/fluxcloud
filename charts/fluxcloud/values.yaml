@@ -57,8 +57,9 @@ affinity: {}
 
 fluxcloud:
   listenPort: 3032
-  slackUrl: https://hooks.slack.com/services/WEBHOOK_URL
-  slackChannel: "#kubernetes"
-  slackUsername: Flux Deployer
-  slackIconEmoji: ":heart:"
-  githubUrl: "https://github.com/justinbarrick/fluxcloud/"
+  slack:
+    url: https://hooks.slack.com/services/WEBHOOK_URL
+    channel: "#kubernetes"
+    username: Flux Deployer
+    iconEmoji: ":heart:"
+    githubUrl: "https://github.com/justinbarrick/fluxcloud/"

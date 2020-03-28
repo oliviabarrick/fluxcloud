@@ -28,9 +28,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: SLACK_URL
-              value: {{ .Values.fluxcloud.slackUrl | quote }}
+              value: {{ .Values.fluxcloud.slack.url | quote }}
             - name: SLACK_CHANNEL
-              value: {{ .Values.fluxcloud.slackChannel | quote }}
+              value: {{ .Values.fluxcloud.slack.channel | quote }}
               # Or configure multiple channels
               # (comma separated <channel>=<namespace>) string:
               #  value: "#kubernetes=*,#team=team"
@@ -41,11 +41,11 @@ spec:
               #       key: token
               #       name: slack-token
             - name: SLACK_USERNAME
-              value: {{ .Values.fluxcloud.slackUsername | quote }}
+              value: {{ .Values.fluxcloud.slack.username | quote }}
             - name: SLACK_ICON_EMOJI
-              value: {{ .Values.fluxcloud.slackIconEmoji | quote }}
+              value: {{ .Values.fluxcloud.slack.iconEmoji | quote }}
             - name: GITHUB_URL
-              value: {{ .Values.fluxcloud.githubUrl | quote }}
+              value: {{ .Values.fluxcloud.slack.githubUrl | quote }}
             - name: LISTEN_ADDRESS
               value: ":{{ .Values.fluxcloud.listenPort }}"
           ports:
