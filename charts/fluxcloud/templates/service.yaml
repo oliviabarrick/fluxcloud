@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fluxcloud.fullname" . }}
+  labels:
+    {{- include "fluxcloud.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.fluxcloud.listenPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "fluxcloud.selectorLabels" . | nindent 4 }}
