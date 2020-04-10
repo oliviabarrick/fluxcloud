@@ -47,6 +47,14 @@ func initExporter(config config.Config) (exporter []exporters.Exporter) {
 			}
 			exporter = append(exporter, slack)
 		}
+
+		if v == "facebook" {
+			facebook, err := exporters.NewFacebook(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, facebook)
+		}
 	}
 
 	for _, e := range exporter {
