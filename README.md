@@ -23,6 +23,10 @@ Set the following environment variables in your chosen deployment:
 * `SLACK_TOKEN` (optional): legacy Slack API token to use.
 * `SLACK_CHANNEL`: the Slack channel to send messages to.
 * `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
+* `MATTERMOST_URL`: the Slack [webhook URL](https://docs.mattermost.com/developer/webhooks-incoming.html) to use.
+* `MATTERMOST_USERNAME`: the Mattermost username to use when sending messages.
+* `MATTERMOST_CHANNEL`: the Mattermost channel to send messages to.
+* `MATTERMOST_ICON_URL`: the Mattermost Icon URL to use as the icon.
 * `MSTEAMS_URL`: the Microsoft Teams [webhook URL](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors#sending-actionable-messages-via-office-365-connectors) to use
 * `GITHUB_URL`: the URL to the Github repository that Flux uses, used for Slack links.
 * `WEBHOOK_URL`: if the exporter is "webhook", then the URL to use for the webhook.
@@ -63,6 +67,12 @@ events from namespace `team-b` to `#teamb` you would set the following string:
 
 Set the environment variable `MSTEAMS_URL` to the URL generated on activation of an
 Incoming Webhook in a Microsoft Teams channel.
+
+## Mattermost
+
+The default exporter to use is Mattermost. To use the Mattermost exporter, set the `MATTERMOST_URL`,
+`MATTERMOST_USERNAME`, and `MATTERMOST_CHANNEL` environment variables to
+use. You can also optionally set the `EXPORTER_TYPE` to "mattermost".
 
 ## Webhooks
 

@@ -47,6 +47,14 @@ func initExporter(config config.Config) (exporter []exporters.Exporter) {
 			}
 			exporter = append(exporter, slack)
 		}
+
+		if v == "mattermost" {
+			mattermost, err := exporters.NewMattermost(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, mattermost)
+		}
 	}
 
 	for _, e := range exporter {
