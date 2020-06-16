@@ -7,6 +7,7 @@ require (
 	github.com/apache/thrift v0.12.0
 	github.com/aws/aws-sdk-go v1.16.26
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/docker/distribution v0.0.0-20180611183926-749f6afb4572
 	github.com/docker/go-metrics v0.0.0-20180209012529-399ea8c73916
@@ -35,6 +36,7 @@ require (
 	github.com/spf13/pflag v1.0.1
 	github.com/stretchr/testify v1.2.2
 	github.com/weaveworks/flux v0.0.0-20190411145155-fea56bc3feee
+	github.com/zorkian/go-datadog-api v2.29.0+incompatible
 	go.opencensus.io v0.20.2
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	golang.org/x/net v0.0.0-20190311183353-d8887717615a

@@ -23,10 +23,15 @@ Set the following environment variables in your chosen deployment:
 * `SLACK_TOKEN` (optional): legacy Slack API token to use.
 * `SLACK_CHANNEL`: the Slack channel to send messages to.
 * `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
+* `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
+* `SLACK_ICON_EMOJI`: the Slack emoji to use as the icon.
+* `DATADOG_API_KEY`: the Datadog API key used to push events.
+* `DATADOG_API_KEY`: the Datadog APP key used to push events.
+* `DATADOG_ADITIONAL_TAGS`: Datadog aditional tags to be added to the generated event.
 * `MSTEAMS_URL`: the Microsoft Teams [webhook URL](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors#sending-actionable-messages-via-office-365-connectors) to use
 * `GITHUB_URL`: the URL to the Github repository that Flux uses, used for Slack links.
 * `WEBHOOK_URL`: if the exporter is "webhook", then the URL to use for the webhook.
-* `EXPORTER_TYPE` (optional): The types of exporter to use in comma delimited form. (Ex: `slack,webhook`) (Choices: slack, msteams, webhook, Default: slack)
+* `EXPORTER_TYPE` (optional): The types of exporter to use in comma delimited form. (Ex: `slack,webhook`) (Choices: slack, msteams, datadog, webhook, Default: slack)
 * `JAEGER_ENDPOINT` (optional): endpoint to report Jaeger traces to.
 
 And then apply the configuration:
@@ -63,6 +68,14 @@ events from namespace `team-b` to `#teamb` you would set the following string:
 
 Set the environment variable `MSTEAMS_URL` to the URL generated on activation of an
 Incoming Webhook in a Microsoft Teams channel.
+
+## Datadog
+
+Events can be sent to Datadog by adding "datadog" to to `EXPORTER_TYPE` and then setting
+the `DATADOG_API_KEY` and the `DATADOG_APP_KEY`. More information about generating those
+keys can be found in [Datadog documentation](https://docs.datadoghq.com/account_management/api-app-keys/).
+
+You can also add additional tags to the event by setting `DATADOG_ADDITIONAL_TAGS`.
 
 ## Webhooks
 

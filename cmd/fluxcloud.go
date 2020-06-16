@@ -47,6 +47,13 @@ func initExporter(config config.Config) (exporter []exporters.Exporter) {
 			}
 			exporter = append(exporter, slack)
 		}
+		if v == "datadog" {
+			dd, err := exporters.NewDatadog(config)
+			if err != nil {
+				log.Fatal(err)
+			}
+			exporter = append(exporter, dd)
+		}
 	}
 
 	for _, e := range exporter {
