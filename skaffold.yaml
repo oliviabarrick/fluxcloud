@@ -1,9 +1,0 @@
-apiVersion: skaffold/v1alpha2
-kind: Config
-build:
-  artifacts:
-  - imageName: justinbarrick/fluxcloud
-deploy:
-  kubectl:
-    manifests:
-    - k8s/*.yaml
