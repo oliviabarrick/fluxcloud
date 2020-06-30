@@ -1,4 +1,4 @@
-module github.com/justinbarrick/fluxcloud
+module github.com/topfreegames/fluxcloud
 
 go 1.12
 

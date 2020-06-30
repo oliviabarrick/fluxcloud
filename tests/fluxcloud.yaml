@@ -43,6 +43,6 @@ spec:
         - name: SLACK_ICON_EMOJI
           value: ":weave:"
         - name: GITHUB_URL
-          value: "https://github.com/justinbarrick/fluxcloud/"
+          value: "https://github.com/topfreegames/fluxcloud/"
         - name: LISTEN_ADDRESS
           value: ":3032"

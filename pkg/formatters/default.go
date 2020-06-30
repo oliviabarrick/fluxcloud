@@ -7,9 +7,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/exporters"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/exporters"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 	"github.com/weaveworks/flux"
 	fluxevent "github.com/weaveworks/flux/event"
 	"github.com/weaveworks/flux/update"

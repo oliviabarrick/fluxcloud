@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 
 	"github.com/zorkian/go-datadog-api"
 )

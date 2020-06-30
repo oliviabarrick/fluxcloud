@@ -3,14 +3,15 @@ package apis
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/exporters"
-	"github.com/justinbarrick/fluxcloud/pkg/formatters"
-	"github.com/justinbarrick/fluxcloud/pkg/utils/test"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	test_utils "github.com/justinbarrick/fluxcloud/pkg/utils/test"
+	"github.com/stretchr/testify/assert"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/exporters"
+	"github.com/topfreegames/fluxcloud/pkg/formatters"
 )
 
 func TestHandleV6(t *testing.T) {

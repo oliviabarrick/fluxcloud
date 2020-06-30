@@ -3,10 +3,9 @@ package formatters
 import (
 	"testing"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/exporters"
-	"github.com/justinbarrick/fluxcloud/pkg/utils/test"
 	"github.com/stretchr/testify/assert"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/exporters"
 	fluxevent "github.com/weaveworks/flux/event"
 )
 

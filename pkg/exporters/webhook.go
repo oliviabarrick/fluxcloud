@@ -9,8 +9,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 )
 
 // The Webhook exporter sends Flux events to a Webhook channel via a webhook.

@@ -1,8 +1,8 @@
 package formatters
 
 import (
-	"github.com/justinbarrick/fluxcloud/pkg/exporters"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/exporters"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 	fluxevent "github.com/weaveworks/flux/event"
 )
 

@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"path/filepath"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 )
 
 type MatrixMessage struct {

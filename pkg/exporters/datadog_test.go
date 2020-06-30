@@ -10,9 +10,9 @@ import (
 
 	"github.com/weaveworks/flux"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
 	"github.com/stretchr/testify/assert"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 
 	fluxevent "github.com/weaveworks/flux/event"
 	"github.com/zorkian/go-datadog-api"

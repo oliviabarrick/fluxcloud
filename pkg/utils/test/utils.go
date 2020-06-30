@@ -2,7 +2,8 @@ package test_utils
 
 import (
 	"bytes"
-	"github.com/justinbarrick/fluxcloud/pkg/utils"
+
+	"github.com/topfreegames/fluxcloud/pkg/utils"
 	fluxevent "github.com/weaveworks/flux/event"
 )
 

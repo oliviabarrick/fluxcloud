@@ -3,7 +3,7 @@ kind: Flux
 metadata:
   name: flux
 spec:
-  gitUrl: ssh://git@github.com/justinbarrick/fluxcloud
+  gitUrl: ssh://git@github.com/topfreegames/fluxcloud
   gitPath: tests/manifests/
   gitBranch: master
   gitPollInterval: 0m30s

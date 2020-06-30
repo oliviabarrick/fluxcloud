@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/justinbarrick/fluxcloud/pkg/config"
-	"github.com/justinbarrick/fluxcloud/pkg/msg"
+	"github.com/topfreegames/fluxcloud/pkg/config"
+	"github.com/topfreegames/fluxcloud/pkg/msg"
 )
 
 // The Slack exporter sends Flux events to a Slack channel via a webhook.
