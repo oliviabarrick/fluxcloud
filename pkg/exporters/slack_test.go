@@ -132,7 +132,7 @@ func TestNewSlackMessageNoIDs(t *testing.T) {
 		Title:     "The title of the message",
 		Body:      "this is the message body",
 		Event: fluxevent.Event{
-			ServiceIDs: []flux.ResourceID{},
+			ServiceIDs: []resource.ID{},
 		},
 	}
 
