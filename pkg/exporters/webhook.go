@@ -36,7 +36,7 @@ func (s *Webhook) Send(c context.Context, client *http.Client, message msg.Messa
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(message)
 	if err != nil {
-		log.Print("Could encode message to Webhook:", err)
+		log.Print("Could not encode message to Webhook:", err)
 		return err
 	}
 
